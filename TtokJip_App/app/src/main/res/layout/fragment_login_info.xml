@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".login.LoginInfo">
+
+    <!-- TextView for "로그인 해주세요" -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:fontFamily="@font/a1009_1"
+        android:lineSpacingExtra="8dp"
+        android:text="로그인\n해주세요\n"
+        android:textColor="@color/black"
+        android:textSize="28dp" />
+
+    <!-- LinearLayout for ID input and Start button -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:orientation="vertical"
+        android:layout_marginBottom="50dp">
+
+        <!-- EditText for ID input positioned directly above "시작하기" -->
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:hint="ID" />
+
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:hint="PW"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- TextView for "시작하기" button -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시작하기"
+            android:fontFamily="@font/a1009_1"
+            android:textSize="40dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+</FrameLayout>
