@@ -2,7 +2,6 @@ package com.example.ttokjip.login
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.ttokjip.R
 import com.example.ttokjip.databinding.ActivityLoginMainBinding
 
 class LoginMain : AppCompatActivity() {
