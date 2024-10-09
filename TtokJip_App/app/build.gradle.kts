@@ -7,15 +7,9 @@ android {
     namespace = "com.example.ttokjip"
     compileSdk = 34
 
-    buildFeatures {
-        dataBinding = true
-        viewBinding = true
-        buildConfig = true
-    }
-
     defaultConfig {
         applicationId = "com.example.ttokjip"
-        minSdk = 26
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

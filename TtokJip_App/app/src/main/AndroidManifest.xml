@@ -13,10 +13,7 @@
         android:theme="@style/Theme.TtokJip"
         tools:targetApi="31">
         <activity
-            android:name=".main.MainView"
-            android:exported="false" />
-        <activity
-            android:name=".login.LoginMain"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
