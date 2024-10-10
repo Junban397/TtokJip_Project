@@ -470,8 +470,21 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
+
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="30dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/a1009_2"
+            android:gravity="center"
+            android:text="즐겨 찾기"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp" />
     </LinearLayout>
 </ScrollView>
