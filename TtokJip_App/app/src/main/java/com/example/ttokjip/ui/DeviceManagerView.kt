@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import com.example.ttokjip.R
 import com.example.ttokjip.viewmodel.DeviceManagerViewModel
 
-class DeviceManager : Fragment() {
+class DeviceManagerView : Fragment() {
 
     companion object {
-        fun newInstance() = DeviceManager()
+        fun newInstance() = DeviceManagerView()
     }
 
     private val viewModel: DeviceManagerViewModel by viewModels()

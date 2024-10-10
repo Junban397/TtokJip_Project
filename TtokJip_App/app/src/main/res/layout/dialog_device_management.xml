@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="300dp"
+    android:layout_height="500dp"
+    android:background="@drawable/rounded_border"
+    android:orientation="vertical"
+    tools:context=".ui.DeviceManagement">
+
+    <ImageView
+        android:layout_width="127dp"
+        android:layout_height="127dp"
+        android:layout_gravity="center"
+        android:layout_margin="18dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:fontFamily="@font/a1009_2"
+            android:gravity="center"
+            android:text="제품 : "
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="28dp"
+            android:background="@drawable/rounded_border"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:fontFamily="@font/a1009_2"
+            android:gravity="center"
+            android:text="이름 : "
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="28dp"
+            android:background="@drawable/rounded_border"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:fontFamily="@font/a1009_2"
+            android:gravity="center"
+            android:text="위치 : "
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="28dp"
+            android:background="@drawable/rounded_border"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:fontFamily="@font/a1009_1"
+            android:text="삭제" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:fontFamily="@font/a1009_1"
+                android:text="취소" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:fontFamily="@font/a1009_1"
+                android:text="수정" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
