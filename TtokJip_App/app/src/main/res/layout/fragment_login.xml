@@ -31,10 +31,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="60dp"
-            android:text="시작하기"
             android:fontFamily="@font/a1009_1"
-            android:textSize="40dp"
-            android:textColor="@color/black" />
+            android:text="시작하기"
+            android:textColor="@color/black"
+            android:textSize="40dp" />
     </FrameLayout>
 
 </FrameLayout>

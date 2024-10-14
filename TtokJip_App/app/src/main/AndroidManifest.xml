@@ -16,10 +16,10 @@
             android:name=".ui.DeviceManagement"
             android:exported="false" />
         <activity
-            android:name=".ui.CenterView"
+            android:name=".ui.MainView"
             android:exported="false" />
         <activity
-            android:name=".ui.MainView"
+            android:name=".ui.CenterView"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
