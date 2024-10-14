@@ -35,8 +35,8 @@ class MainView : Fragment() {
     }
 
     /**
-     * RecyclerView 초기 설정 및 Adapter 연결
-     */
+        RecyclerView, Adapter 연결
+     **/
     private fun setupRecyclerView() {
         adapter = DeviceAdapter()
         binding.favoriteRecyclerview.apply {
@@ -48,8 +48,8 @@ class MainView : Fragment() {
     }
 
     /**
-     * ViewModel 관찰 설정 및 RecyclerView 높이 조정
-     */
+        LiveData설정, RecyclerView 높이 조정
+     **/
     private fun setupViewModelObservers() {
         deviceViewModel = ViewModelProvider(this).get(DeviceViewModel::class.java)
         deviceViewModel.deviceList.observe(viewLifecycleOwner) { devices ->
@@ -61,11 +61,11 @@ class MainView : Fragment() {
     }
 
     /**
-     * RecyclerView 높이 동적 조정
+        RecyclerView 높이 동적 조정
      */
     private fun adjustRecyclerViewHeight(itemCount: Int) {
-        val itemHeight = (180 * resources.displayMetrics.density).toInt() // 아이템 높이 (dp -> pixels 변환)
-        val totalHeight = itemHeight * (itemCount / 2 + itemCount % 2) // 총 높이 계산 (2개씩 배치)
+        val itemHeight = (180 * resources.displayMetrics.density).toInt()
+        val totalHeight = itemHeight * (itemCount / 2 + itemCount % 2)
 
         // RecyclerView 높이 설정
         binding.favoriteRecyclerview.layoutParams = binding.favoriteRecyclerview.layoutParams.apply {
@@ -74,7 +74,7 @@ class MainView : Fragment() {
     }
 
     /**
-     * 필터 적용 메서드
+        device필터 적용
      */
     private fun applyFilter(filterType: FilterType, location: String?) {
         deviceViewModel.filterDevices(filterType, location)

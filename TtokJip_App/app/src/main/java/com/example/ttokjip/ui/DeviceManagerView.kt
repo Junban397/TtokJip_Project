@@ -43,8 +43,8 @@ class DeviceManagerView : Fragment() {
     }
 
     /**
-     * RecyclerView 초기 설정 및 Adapter 연결
-     */
+        RecyclerView, Adapter 연결
+     **/
     private fun setupRecyclerView() {
         val gridLayoutManager = GridLayoutManager(context, 2)
         adapter = DeviceAdapter()
@@ -57,7 +57,7 @@ class DeviceManagerView : Fragment() {
     }
 
     /**
-     * ViewModel 초기화 및 데이터 관찰
+        LiveData 설정
      */
     private fun setupViewModel() {
         deviceViewModel = ViewModelProvider(this).get(DeviceViewModel::class.java)
@@ -68,19 +68,19 @@ class DeviceManagerView : Fragment() {
     }
 
     /**
-     * 필터 적용 메서드
+        device 필터
      */
     private fun applyFilter(filterType: FilterType, location: String?) {
         val filteredList = when (filterType) {
-            FilterType.ALL -> saveDeviceList // 모든 기기
-            FilterType.LOCATION -> saveDeviceList.filter { it.DeviceLocation == location } // 특정 위치
+            FilterType.ALL -> saveDeviceList
+            FilterType.LOCATION -> saveDeviceList.filter { it.DeviceLocation == location }
             else->saveDeviceList
         }
-        adapter.submitList(filteredList) // 필터링된 리스트로 업데이트
+        adapter.submitList(filteredList)
     }
 
     /**
-     * 특정 텍스트로 버튼 생성 및 추가
+        Location으로 버튼 동적 생성
      */
     private fun addLocationButton(text: String): Button {
         val houseId="house1"
@@ -112,7 +112,7 @@ class DeviceManagerView : Fragment() {
     }
 
     /**
-     * 선택된 버튼을 업데이트하고 이전 버튼의 스타일을 초기화
+        선택버튼 스타일 변경
      */
     private fun updateSelectedButton(selected: Button) {
         selectedButton?.apply {
@@ -133,15 +133,15 @@ class DeviceManagerView : Fragment() {
     }
 
     /**
-     * 특정 houseId에 해당하는 기기의 위치별로 버튼 생성
+        deivceLocation Button생성 함수
      */
     private fun setLocationButtons(houseId: String) {
         val devices = deviceViewModel.deviceList.value ?: return
 
-        // 중복된 위치 제거
+        // 중복 값 제거
         val uniqueLocations = devices.map(Device::DeviceLocation).distinct()
 
-        // 기본 "모든 기기" 버튼 추가
+        // 모든 기기 버튼 추가
         addLocationButton("모든 기기").apply {
             selectedButton = this
             setBackgroundColor(

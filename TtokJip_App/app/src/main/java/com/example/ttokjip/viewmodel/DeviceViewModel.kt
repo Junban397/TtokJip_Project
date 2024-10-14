@@ -28,10 +28,9 @@ class DeviceViewModel : ViewModel() {
 
     fun filterDevices(filterType: FilterType, location: String?) {
         _deviceList.value = when (filterType) {
-            FilterType.ALL -> _deviceList.value // 현재 기기 리스트 반환
+            FilterType.ALL -> _deviceList.value
             FilterType.FAVORITE -> _deviceList.value?.filter { it.isFavorite }
             FilterType.LOCATION -> _deviceList.value?.filter { it.DeviceLocation == location }
-            //else -> _deviceList.value // 기본값으로 현재 리스트 반환
         }
     }
 
