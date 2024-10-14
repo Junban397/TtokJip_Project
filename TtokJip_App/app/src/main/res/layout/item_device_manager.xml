@@ -3,17 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <!--        <variable-->
-        <!--            />-->
+
+        <variable
+            name="device"
+            type="com.example.ttokjip.data.Device"
+            />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:background="@drawable/rounded_border">
 
         <ImageView
-            android:id="@+id/main_image"
+            android:id="@+id/device_image"
             android:layout_width="65dp"
             android:layout_height="65dp"
             android:layout_margin="10dp"
@@ -21,12 +24,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/bookmark_image"
+            android:id="@+id/favorite_image"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="5dp"
-            android:src="@drawable/book_mark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,19 +40,22 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/main_image">
+            app:layout_constraintTop_toBottomOf="@id/device_image">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/device_name"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/a1009_2"
-                android:text="기기이름"
+                android:text="@{device.DeviceName}"
+                android:textColor="@color/black"
                 android:textSize="18sp" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="기기상태" />
+                android:id="@+id/device_loc"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="@{device.DeviceLocation}" />
         </LinearLayout>
 
         <ImageView
