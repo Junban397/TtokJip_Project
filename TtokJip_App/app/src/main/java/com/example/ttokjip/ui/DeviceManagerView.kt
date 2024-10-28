@@ -47,7 +47,14 @@ class DeviceManagerView : Fragment() {
      **/
     private fun setupRecyclerView() {
         val gridLayoutManager = GridLayoutManager(context, 2)
-        adapter = DeviceAdapter()
+        adapter = DeviceAdapter(
+            onDeviceClick = {deviceId ->
+                deviceViewModel.deviceSwitch(deviceId)
+            },
+            onFavoriteClick = {deviceId ->
+                deviceViewModel.deviceFavoriteSwitch(deviceId)
+            }
+        )
 
         binding.filterDeviceRecyclerview.apply {
             layoutManager = gridLayoutManager
@@ -73,7 +80,7 @@ class DeviceManagerView : Fragment() {
     private fun applyFilter(filterType: FilterType, location: String?) {
         val filteredList = when (filterType) {
             FilterType.ALL -> saveDeviceList
-            FilterType.LOCATION -> saveDeviceList.filter { it.DeviceLocation == location }
+            FilterType.LOCATION -> saveDeviceList.filter { it.deviceLocation == location }
             else->saveDeviceList
         }
         adapter.submitList(filteredList)
@@ -139,7 +146,7 @@ class DeviceManagerView : Fragment() {
         val devices = deviceViewModel.deviceList.value ?: return
 
         // 중복 값 제거
-        val uniqueLocations = devices.map(Device::DeviceLocation).distinct()
+        val uniqueLocations = devices.map(Device::deviceLocation).distinct()
 
         // 모든 기기 버튼 추가
         addLocationButton("모든 기기").apply {

@@ -5,7 +5,7 @@ import com.example.ttokjip.data.Device
 
 class DeviceDiffCallback : DiffUtil.ItemCallback<Device>() {
     override fun areItemsTheSame(oldItem: Device, newItem: Device): Boolean {
-        return oldItem.DeviceId == newItem.DeviceId // ID로 항목 비교
+        return oldItem.deviceId == newItem.deviceId // ID로 항목 비교
     }
 
     override fun areContentsTheSame(oldItem: Device, newItem: Device): Boolean {

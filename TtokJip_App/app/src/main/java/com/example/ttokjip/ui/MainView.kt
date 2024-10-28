@@ -38,7 +38,14 @@ class MainView : Fragment() {
         RecyclerView, Adapter 연결
      **/
     private fun setupRecyclerView() {
-        adapter = DeviceAdapter()
+        adapter = DeviceAdapter(
+            onDeviceClick = {deviceId ->
+                deviceViewModel.deviceSwitch(deviceId)
+            },
+            onFavoriteClick = {deviceId ->
+                deviceViewModel.deviceFavoriteSwitch(deviceId)
+            }
+        )
         binding.favoriteRecyclerview.apply {
             adapter = this@MainView.adapter
             layoutManager = GridLayoutManager(context, 2)
