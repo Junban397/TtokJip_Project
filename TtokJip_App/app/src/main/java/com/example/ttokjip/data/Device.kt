@@ -1,3 +1,11 @@
 package com.example.ttokjip.data
 
-data class Device(val DeviceId:String, val houseId:String, val DeviceType:String, val DeviceName:String , val DeviceLocation:String,val isFavorite:Boolean)
+data class Device(
+    val deviceId: String,
+    val houseId: String,
+    val deviceType: String,
+    val deviceName: String,
+    val deviceLocation: String,
+    val deviceStatus:Boolean,
+    val isFavorite: Boolean
+)
