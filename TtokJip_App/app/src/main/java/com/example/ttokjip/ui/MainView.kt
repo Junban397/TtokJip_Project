@@ -1,6 +1,10 @@
 package com.example.ttokjip.ui
 
 import GridSpacingItemDecoration
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +12,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.ttokjip.R
 import com.example.ttokjip.adapter.DeviceAdapter
+import com.example.ttokjip.data.Device
 import com.example.ttokjip.databinding.FragmentMainViewBinding
 import com.example.ttokjip.viewmodel.DeviceViewModel
 import com.example.ttokjip.viewmodel.FilterType
@@ -35,16 +41,17 @@ class MainView : Fragment() {
     }
 
     /**
-        RecyclerView, Adapter 연결
+    RecyclerView, Adapter 연결
      **/
     private fun setupRecyclerView() {
         adapter = DeviceAdapter(
-            onDeviceClick = {deviceId ->
+            onDeviceClick = { deviceId ->
                 deviceViewModel.deviceSwitch(deviceId)
             },
-            onFavoriteClick = {deviceId ->
+            onFavoriteClick = { deviceId ->
                 deviceViewModel.deviceFavoriteSwitch(deviceId)
-            }
+            },
+            onLongClick = { device -> showDeviceDialog(device) }
         )
         binding.favoriteRecyclerview.apply {
             adapter = this@MainView.adapter
@@ -55,7 +62,7 @@ class MainView : Fragment() {
     }
 
     /**
-        LiveData설정, RecyclerView 높이 조정
+    LiveData설정, RecyclerView 높이 조정
      **/
     private fun setupViewModelObservers() {
         deviceViewModel = ViewModelProvider(this).get(DeviceViewModel::class.java)
@@ -68,23 +75,32 @@ class MainView : Fragment() {
     }
 
     /**
-        RecyclerView 높이 동적 조정
+    RecyclerView 높이 동적 조정
      */
     private fun adjustRecyclerViewHeight(itemCount: Int) {
         val itemHeight = (180 * resources.displayMetrics.density).toInt()
         val totalHeight = itemHeight * (itemCount / 2 + itemCount % 2)
 
         // RecyclerView 높이 설정
-        binding.favoriteRecyclerview.layoutParams = binding.favoriteRecyclerview.layoutParams.apply {
-            height = totalHeight
-        }
+        binding.favoriteRecyclerview.layoutParams =
+            binding.favoriteRecyclerview.layoutParams.apply {
+                height = totalHeight
+            }
     }
 
     /**
-        device필터 적용
+    device필터 적용
      */
     private fun applyFilter(filterType: FilterType, location: String?) {
         deviceViewModel.filterDevices(filterType, location)
+    }
+
+    /**
+     Device Info Dialog 출력
+     */
+    private fun showDeviceDialog(device: Device){
+        val dialog = DeviceInfoDialog(device)
+        dialog.show(parentFragmentManager, "CustomDialog")
     }
 
     override fun onDestroyView() {

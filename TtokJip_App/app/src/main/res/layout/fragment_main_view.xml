@@ -232,7 +232,7 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/rounded_textview"
                         android:gravity="center"
-                        android:padding="15dp"
+                        android:padding="20dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/icon_home" />
 
@@ -258,7 +258,7 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/rounded_textview"
                         android:gravity="center"
-                        android:padding="15dp"
+                        android:padding="20dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/icon_color_home" />
 
@@ -284,7 +284,7 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/rounded_textview"
                         android:gravity="center"
-                        android:padding="15dp"
+                        android:padding="20dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/icon_night" />
 
@@ -310,7 +310,7 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/rounded_textview"
                         android:gravity="center"
-                        android:padding="15dp"
+                        android:padding="20dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/icon_ventilation" />
 
@@ -336,7 +336,7 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/rounded_textview"
                         android:gravity="center"
-                        android:padding="15dp"
+                        android:padding="20dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/icon_power_save" />
 

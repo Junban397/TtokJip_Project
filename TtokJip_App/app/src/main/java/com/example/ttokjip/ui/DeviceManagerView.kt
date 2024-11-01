@@ -1,6 +1,7 @@
 package com.example.ttokjip.ui
 
 import GridSpacingItemDecoration
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -53,7 +54,7 @@ class DeviceManagerView : Fragment() {
             },
             onFavoriteClick = {deviceId ->
                 deviceViewModel.deviceFavoriteSwitch(deviceId)
-            }
+            },onLongClick ={device -> showDeviceDialog(device)}
         )
 
         binding.filterDeviceRecyclerview.apply {
@@ -163,6 +164,15 @@ class DeviceManagerView : Fragment() {
         uniqueLocations.forEach { location ->
             addLocationButton(location)
         }
+    }
+    private fun showDeviceDialog(device: Device){
+        val dialog= Dialog(requireContext())
+        dialog.setContentView(R.layout.dialog_device_management)
+
+
+        dialog.window?.setDimAmount(0.7f) // 배경 어둡게 조절
+        dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) // 크기 설정
+        dialog.show()
     }
 
     override fun onDestroyView() {
