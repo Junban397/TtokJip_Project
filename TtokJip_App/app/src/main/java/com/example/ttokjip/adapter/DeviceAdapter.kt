@@ -1,5 +1,7 @@
 package com.example.ttokjip.adapter
 
+import android.app.Dialog
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -10,7 +12,8 @@ import com.example.ttokjip.databinding.ItemDeviceManagerBinding
 
 class DeviceAdapter(
     private val onDeviceClick: (String) -> Unit,
-    private val onFavoriteClick:(String) -> Unit) :
+    private val onFavoriteClick:(String) -> Unit,
+    private val onLongClick: (Device) -> Unit):
     ListAdapter<Device, DeviceAdapter.DeviceViewHolder>(DeviceDiffCallback()) {
 
     class DeviceViewHolder(private val binding: ItemDeviceManagerBinding) :
@@ -44,7 +47,9 @@ class DeviceAdapter(
             binding.favoriteImage.setOnClickListener{
                 onFavoriteClick(device.deviceId)
             }
+
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
@@ -55,5 +60,11 @@ class DeviceAdapter(
 
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
         holder.bind(getItem(position), onDeviceClick, onFavoriteClick) // deviceId를 전달
+
+        // LongClick 리스너 추가
+        holder.itemView.setOnLongClickListener {
+            onLongClick(getItem(position)) // LongClick 시 Device 객체 전달
+            true // LongClick 이벤트가 처리되었음을 나타냄
+        }
     }
 }

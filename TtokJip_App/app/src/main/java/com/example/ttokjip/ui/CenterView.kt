@@ -1,12 +1,16 @@
 package com.example.ttokjip.ui
 
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.ttokjip.R
+import com.example.ttokjip.data.Device
 import com.example.ttokjip.databinding.ActivityCenterViewBinding
 
 class CenterView : AppCompatActivity() {
@@ -40,4 +44,6 @@ class CenterView : AppCompatActivity() {
             .commit()
 
     }
+
+
 }
