@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="device"
             type="com.example.ttokjip.data.Device"
@@ -41,7 +40,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/device_image">
+            app:layout_constraintBottom_toBottomOf="parent"> <!-- 부모 하단에 정렬 -->
 
             <TextView
                 android:id="@+id/device_name"
