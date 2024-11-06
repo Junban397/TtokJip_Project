@@ -20,13 +20,7 @@ class DeviceAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(device: Device, onDeviceClick: (String) -> Unit, onFavoriteClick: (String) -> Unit) {
             binding.device = device
-            binding.deviceImage.setImageResource(
-                when (device.deviceType) {
-                    "cctv" -> R.drawable.icon_cctv
-                    "tv" -> R.drawable.icon_tv
-                    else -> R.drawable.icon_ttokjib
-                }
-            )
+            binding.deviceImage.setImageResource(device.getImageResource())
 
             // 상태 UI 설정
             binding.deviceStatus.setBackgroundResource(

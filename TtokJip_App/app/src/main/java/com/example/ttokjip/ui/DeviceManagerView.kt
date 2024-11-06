@@ -166,13 +166,8 @@ class DeviceManagerView : Fragment() {
         }
     }
     private fun showDeviceDialog(device: Device){
-        val dialog= Dialog(requireContext())
-        dialog.setContentView(R.layout.dialog_device_management)
-
-
-        dialog.window?.setDimAmount(0.7f) // 배경 어둡게 조절
-        dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) // 크기 설정
-        dialog.show()
+        val dialog = DeviceInfoDialog(device)
+        dialog.show(parentFragmentManager, "CustomDialog")
     }
 
     override fun onDestroyView() {
