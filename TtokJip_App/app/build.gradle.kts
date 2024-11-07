@@ -53,7 +53,12 @@ android {
 }
 
 dependencies {
-
+    //소켓
+    implementation("io.socket:socket.io-client:2.0.0")
+    // OkHttp
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    // JSON 처리용 라이브러리
+    implementation("org.json:json:20210307")
     implementation("com.android.volley:volley:1.2.1")
     implementation("org.json:json:20210307")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

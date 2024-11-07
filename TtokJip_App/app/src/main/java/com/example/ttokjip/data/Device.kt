@@ -5,11 +5,11 @@ import com.example.ttokjip.R
 data class Device(
     val deviceId: String,
     val houseId: String,
-    val deviceType: String,
-    val deviceName: String,
-    val deviceLocation: String,
-    val deviceStatus:Boolean,
-    val isFavorite: Boolean
+    var deviceType: String,
+    var deviceName: String,
+    var deviceLocation: String,
+    var deviceStatus:Boolean,
+    var isFavorite: Boolean
 ){
     fun getImageResource(): Int {
         return when (deviceType) {
@@ -19,3 +19,6 @@ data class Device(
         }
     }
 }
+data class DeviceStatusUpdate(
+    val deviceStatus: Boolean
+)

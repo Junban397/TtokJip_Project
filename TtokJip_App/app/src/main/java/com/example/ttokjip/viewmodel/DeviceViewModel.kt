@@ -1,55 +1,56 @@
 package com.example.ttokjip.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ttokjip.data.Device
+import com.example.ttokjip.network.RetrofitClient
+import retrofit2.HttpException
 
 class DeviceViewModel : ViewModel() {
     private val _deviceList = MutableLiveData<List<Device>>(emptyList())
     val deviceList: LiveData<List<Device>> get() = _deviceList
 
+    // 서버에서 디바이스 목록 가져오기
+    suspend fun fetchDevices(token: String) {
+        try {
+            // 요청에 Authorization 헤더를 추가하여 서버로 보냄
+            val response = RetrofitClient.apiService.getDevices("Bearer $token")
 
-    private val allDevices = listOf(    //샘플데이터
-        Device("1", "house1", "tv", "Living Room Light", "거실", false, true),
-        Device("2", "house1", "tv", "Kitchen Light", "주방", true, true),
-        Device("3", "house1", "cctv", "Entrance CCTV", "입구", false, true),
-        Device("4", "house1", "cctva", "Entrance CCTV", "입구", true, false),
-        Device("5", "house1", "cctvb", "Entrance CCTV", "입구", true, true),
-        Device("6", "house1", "tv", "Entrance CCTV", "입구", true, true),
-        Device("7", "house1", "tv", "Entrance CCTV", "입구", true, true),
-        Device("8", "house1", "cctvc", "Entrance CCTV", "입구", true, false),
-        Device("9", "house1", "cctvc", "Entrance CCTV", "입구", true, false),
-        Device("10", "house2", "tv", "Living Room TV", "거실", true, false)
-    )
-
-    fun houseIdFilterDevices(houseId: String) {
-        _deviceList.value = allDevices.filter { it.houseId == houseId }
-    }
-
-    fun filterDevices(filterType: FilterType, location: String?) {
-        _deviceList.value = when (filterType) {
-            FilterType.ALL -> _deviceList.value
-            FilterType.FAVORITE -> _deviceList.value?.filter { it.isFavorite }
-            FilterType.LOCATION -> _deviceList.value?.filter { it.deviceLocation == location }
-        }
-    }
-
-    fun getDevicesByHouseId(houseId: String): List<Device> {
-        return allDevices.filter { it.houseId == houseId }
-    }
-    // Device의 Status 변경 메서드
-    fun deviceSwitch(deviceId: String) {
-        _deviceList.value = _deviceList.value?.map { device ->
-            if (device.deviceId == deviceId) {
-                device.copy(deviceStatus = !device.deviceStatus)
-            } else {
-                device
+            if (response.isSuccessful) {
+                _deviceList.postValue(response.body() ?: emptyList())
             }
+        } catch (e: HttpException) {
+            // 오류 처리
+        } catch (e: Exception) {
+            // 오류 처리
         }
     }
 
-    fun deviceFavoriteSwitch(deviceId: String){
+
+    // Device의 Status 변경 메서드 (로컬 상태 변경 제거)
+    suspend fun deviceSwitch(deviceId: String, token: String) {
+        try {
+            // 서버로 상태 변경 요청 보내기
+            val device = _deviceList.value?.find { it.deviceId == deviceId }
+            val newStatus = device?.deviceStatus?.not() ?: return
+            Log.d("DeviceViewModel", "디바이스 상태 변경 요청: deviceId = $deviceId, 새로운 상태 = $newStatus")
+            // 서버에 상태 변경을 요청하는 함수 호출
+            val response = RetrofitClient.apiService.updateDeviceStatus(deviceId, newStatus)
+            if (response.isSuccessful) {
+                // 서버에서 상태가 변경되면, 다시 최신 디바이스 목록을 가져옴
+                fetchDevices(token)  // 디바이스 목록을 새로 가져옴
+            } else {
+                Log.e("DeviceViewModel", "디바이스 상태 변경 실패")
+            }
+        } catch (e: Exception) {
+            Log.e("DeviceViewModel", "서버 오류: ${e.message}")
+        }
+    }
+
+
+    fun deviceFavoriteSwitch(deviceId: String) {
         _deviceList.value = _deviceList.value?.map { device ->
             if (device.deviceId == deviceId) {
                 device.copy(isFavorite = !device.isFavorite)
@@ -65,4 +66,3 @@ enum class FilterType {
     FAVORITE,
     LOCATION
 }
-
