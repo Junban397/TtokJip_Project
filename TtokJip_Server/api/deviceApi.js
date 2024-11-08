@@ -34,8 +34,6 @@ const updateDeviceStatus = async (req, res) => {
         return res.status(400).json({ message: 'deviceId가 제공되지 않았습니다.' });
     }
 
-    console.log('디바이스 상태 변경 요청: deviceId =', deviceId, ', 새로운 상태 =', status);  // 로그 추가
-
     try {
         await client.connect();
         const database = client.db('ttokjip');
@@ -61,8 +59,9 @@ const updateDeviceStatus = async (req, res) => {
 const updateDeviceFavorite = async (req, res) => {
     const { deviceId, isFavorite } = req.body; 
 
-    if (typeof isFavorite !== 'boolean') {
-        return res.status(400).json({ message: '즐겨찾기 값은 boolean이어야 합니다.' });
+    // deviceId가 없으면 400 에러 처리
+    if (!deviceId) {
+        return res.status(400).json({ message: 'deviceId가 제공되지 않았습니다.' });
     }
 
     try {
