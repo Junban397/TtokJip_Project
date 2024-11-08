@@ -1,10 +1,10 @@
 package com.example.ttokjip.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ttokjip.data.Device
+import com.example.ttokjip.data.StatusRequest
 import com.example.ttokjip.network.RetrofitClient
 import retrofit2.HttpException
 
@@ -28,28 +28,29 @@ class DeviceViewModel : ViewModel() {
         }
     }
 
-
-    // Device의 Status 변경 메서드 (로컬 상태 변경 제거)
     suspend fun deviceSwitch(deviceId: String, token: String) {
         try {
-            // 서버로 상태 변경 요청 보내기
             val device = _deviceList.value?.find { it.deviceId == deviceId }
-            val newStatus = device?.deviceStatus?.not() ?: return
-            Log.d("DeviceViewModel", "디바이스 상태 변경 요청: deviceId = $deviceId, 새로운 상태 = $newStatus")
-            // 서버에 상태 변경을 요청하는 함수 호출
-            val response = RetrofitClient.apiService.updateDeviceStatus(deviceId, newStatus)
+            if (device == null) {
+                return  // 디바이스가 없으면 더 이상 진행하지 않음
+            }
+
+            val newStatus = device.deviceStatus?.not() ?: return  // 상태 반전
+
+            // deviceId와 상태를 함께 보내는 요청 데이터 생성
+            val statusRequest = StatusRequest(deviceId, newStatus)
+
+            val response = RetrofitClient.apiService.updateDeviceStatus(deviceId, statusRequest, "Bearer $token")
+
             if (response.isSuccessful) {
-                // 서버에서 상태가 변경되면, 다시 최신 디바이스 목록을 가져옴
-                fetchDevices(token)  // 디바이스 목록을 새로 가져옴
-            } else {
-                Log.e("DeviceViewModel", "디바이스 상태 변경 실패")
+                fetchDevices(token)  // 디바이스 목록을 갱신
             }
         } catch (e: Exception) {
-            Log.e("DeviceViewModel", "서버 오류: ${e.message}")
+            // 오류 처리
         }
     }
 
-
+    // 디바이스 즐겨찾기 상태 변경
     fun deviceFavoriteSwitch(deviceId: String) {
         _deviceList.value = _deviceList.value?.map { device ->
             if (device.deviceId == deviceId) {
