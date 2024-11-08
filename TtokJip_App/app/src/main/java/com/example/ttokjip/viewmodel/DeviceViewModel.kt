@@ -12,38 +12,47 @@ class DeviceViewModel : ViewModel() {
     private val _deviceList = MutableLiveData<List<Device>>(emptyList())
     val deviceList: LiveData<List<Device>> get() = _deviceList
 
+    private val _filteredDeviceList = MutableLiveData<List<Device>>(emptyList())
+    val filteredDeviceList: LiveData<List<Device>> get() = _filteredDeviceList
+
     // 서버에서 디바이스 목록 가져오기
     suspend fun fetchDevices(token: String) {
         try {
-            // 요청에 Authorization 헤더를 추가하여 서버로 보냄
             val response = RetrofitClient.apiService.getDevices("Bearer $token")
 
             if (response.isSuccessful) {
-                _deviceList.postValue(response.body() ?: emptyList())
+                val devices = response.body() ?: emptyList()
+                _deviceList.postValue(devices)
+                _filteredDeviceList.postValue(devices) // 처음에는 모든 데이터로 설정
             }
-        } catch (e: HttpException) {
-            // 오류 처리
         } catch (e: Exception) {
             // 오류 처리
         }
     }
 
+    // 필터 적용
+    fun applyFilter(filterType: FilterType, location: String?) {
+        val filteredList = when (filterType) {
+            FilterType.ALL -> _deviceList.value ?: emptyList()
+            FilterType.LOCATION -> _deviceList.value?.filter { it.deviceLocation == location } ?: emptyList()
+            else -> _deviceList.value ?: emptyList()
+        }
+        _filteredDeviceList.postValue(filteredList)
+    }
+
+    // device 상태 전환
     suspend fun deviceSwitch(deviceId: String, token: String) {
         try {
             val device = _deviceList.value?.find { it.deviceId == deviceId }
-            if (device == null) {
-                return  // 디바이스가 없으면 더 이상 진행하지 않음
-            }
+            if (device == null) return
 
-            val newStatus = device.deviceStatus?.not() ?: return  // 상태 반전
-
-            // deviceId와 상태를 함께 보내는 요청 데이터 생성
+            val newStatus = device.deviceStatus?.not() ?: return
             val statusRequest = StatusRequest(deviceId, newStatus)
 
             val response = RetrofitClient.apiService.updateDeviceStatus(deviceId, statusRequest, "Bearer $token")
 
             if (response.isSuccessful) {
-                fetchDevices(token)  // 디바이스 목록을 갱신
+                fetchDevices(token)  // 디바이스 목록 갱신
             }
         } catch (e: Exception) {
             // 오류 처리
