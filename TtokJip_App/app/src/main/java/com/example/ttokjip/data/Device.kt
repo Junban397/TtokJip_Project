@@ -19,6 +19,7 @@ data class Device(
         }
     }
 }
-data class DeviceStatusUpdate(
-    val deviceStatus: Boolean
+data class StatusRequest(
+    val deviceId: String,
+    val status: Boolean
 )

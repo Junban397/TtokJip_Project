@@ -29,13 +29,20 @@ const getDevices = async (req, res) => {
 const updateDeviceStatus = async (req, res) => {
     const { deviceId, status } = req.body;
 
+    // deviceId가 없으면 400 에러 처리
+    if (!deviceId) {
+        return res.status(400).json({ message: 'deviceId가 제공되지 않았습니다.' });
+    }
+
+    console.log('디바이스 상태 변경 요청: deviceId =', deviceId, ', 새로운 상태 =', status);  // 로그 추가
+
     try {
         await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('devices');
 
         const result = await collection.updateOne(
-            { _id: new MongoClient.ObjectId(deviceId) },
+            { deviceId: deviceId },  // deviceId로 찾기
             { $set: { deviceStatus: status } }
         );
 
@@ -51,22 +58,38 @@ const updateDeviceStatus = async (req, res) => {
         await client.close();
     }
 };
+const updateDeviceFavorite = async (req, res) => {
+    const { deviceId, isFavorite } = req.body; 
 
-const updateDeviceFavorite=async(req, res) => {
-    const{ deviceId, isFavorite }=req.body;
-    const { houseId } = req.user;
-    try{
+    if (typeof isFavorite !== 'boolean') {
+        return res.status(400).json({ message: '즐겨찾기 값은 boolean이어야 합니다.' });
+    }
+
+    try {
         await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('devices');
-    }catch(error){
-        console.error(error)
-        res.status(500).json({message :'서버 오류'})
-    }finally {
+
+        const result = await collection.updateOne(
+            { deviceId: deviceId}, 
+            { $set: { isFavorite: isFavorite } }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).json({ message: '디바이스 즐겨찾기 상태가 성공적으로 변경되었습니다.' });
+        } else {
+            res.status(404).json({ message: '디바이스를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: '서버 오류' });
+    } finally {
         await client.close();
     }
-}
-module.exports = {     
+};
+
+module.exports = { 
     getDevices,
     updateDeviceStatus,
-    updateDeviceFavorite };
+    updateDeviceFavorite 
+};
