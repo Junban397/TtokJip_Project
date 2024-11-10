@@ -1,6 +1,7 @@
 package com.example.ttokjip.network
 
 import com.example.ttokjip.data.Device
+import com.example.ttokjip.data.IsFavoriteRequest
 import com.example.ttokjip.data.StatusRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -15,6 +16,13 @@ interface ApiService {
     suspend fun updateDeviceStatus(
         @Query("deviceId") deviceId: String,
         @Body statusRequest: StatusRequest,
+        @Header("Authorization") token: String
+    ): Response<Device>
+
+    @PUT("/devices/updateFavorite")
+    suspend fun updateDeviceFavorite(
+        @Query("deviceId") deviceId: String,
+        @Body favoriteRequest: IsFavoriteRequest,
         @Header("Authorization") token: String
     ): Response<Device>
 
