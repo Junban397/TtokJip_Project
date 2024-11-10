@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ttokjip.data.Device
+import com.example.ttokjip.data.IsFavoriteRequest
 import com.example.ttokjip.data.StatusRequest
 import com.example.ttokjip.network.RetrofitClient
 import retrofit2.HttpException
@@ -60,13 +61,21 @@ class DeviceViewModel : ViewModel() {
     }
 
     // 디바이스 즐겨찾기 상태 변경
-    fun deviceFavoriteSwitch(deviceId: String) {
-        _deviceList.value = _deviceList.value?.map { device ->
-            if (device.deviceId == deviceId) {
-                device.copy(isFavorite = !device.isFavorite)
-            } else {
-                device
+    suspend fun deviceFavoriteSwitch(deviceId: String,token: String) {
+        try{
+            val device = _deviceList.value?.find{it.deviceId==deviceId}
+            if (device==null) return
+
+            val newIsFavorite=device.isFavorite?.not() ?: return
+            val isFavoriteRequest= IsFavoriteRequest(deviceId, newIsFavorite)
+
+            val response=RetrofitClient.apiService.updateDeviceFavorite(deviceId,isFavoriteRequest,"Bearer $token")
+            if (response.isSuccessful) {
+                fetchDevices(token)  // 디바이스 목록 갱신
             }
+
+        }catch (e: Exception) {
+            // 오류 처리
         }
     }
 }

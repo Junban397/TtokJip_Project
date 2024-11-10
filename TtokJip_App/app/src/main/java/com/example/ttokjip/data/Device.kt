@@ -23,3 +23,7 @@ data class StatusRequest(
     val deviceId: String,
     val status: Boolean
 )
+data class IsFavoriteRequest(
+    val deviceId: String,
+    val isFavorite: Boolean
+)

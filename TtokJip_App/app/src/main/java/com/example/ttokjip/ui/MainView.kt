@@ -69,7 +69,7 @@ class MainView : BaseDeviceManger() {
             onFavoriteClick = { deviceId ->
                 // 코루틴 내에서 호출
                 viewLifecycleOwner.lifecycleScope.launch {
-                    deviceViewModel.deviceFavoriteSwitch(deviceId)
+                    deviceViewModel.deviceFavoriteSwitch(deviceId,token)
                 }
             },
             onLongClick = { device -> showDeviceDialog(device) }
