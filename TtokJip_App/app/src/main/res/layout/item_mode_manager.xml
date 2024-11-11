@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="modeSetting"
+            type="com.example.ttokjip.data.ModeSetting" />
+    </data>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:layout_marginRight="18dp"
+            android:fontFamily="@font/a1009_1"
+            android:gravity="center|left"
+            android:text="@{modeSetting.deviceName}"
+            android:textSize="14dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/a1009_1"
+            android:gravity="center|left"
+            android:text="@{modeSetting.deviceLocation}"
+            android:textSize="10dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/mode_status_switch"
+            style="@style/switch_toggle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="18dp"
+            android:background="@null" />
+    </LinearLayout>
+
+</layout>

@@ -3,5 +3,6 @@
     <color name="transparent">#00000000</color> <!-- 완전 투명 -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="selected_button_color">#DDDDDD</color> <!-- 선택된 버튼 색상 (예: 토마토색) -->
     <!-- 필요한 다른 색상 정의 추가 -->
 </resources>

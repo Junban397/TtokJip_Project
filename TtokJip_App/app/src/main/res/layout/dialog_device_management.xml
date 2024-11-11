@@ -103,6 +103,7 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:textColor="@color/white"
             android:layout_width="60dp"
             android:layout_height="30dp"
             android:fontFamily="@font/a1009_1"
@@ -117,6 +118,7 @@
             android:gravity="end">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:textColor="@color/white"
                 android:background="@drawable/rounded_btn"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
@@ -125,6 +127,7 @@
                 android:text="취소" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:textColor="@color/white"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/rounded_btn"
                 android:layout_width="60dp"

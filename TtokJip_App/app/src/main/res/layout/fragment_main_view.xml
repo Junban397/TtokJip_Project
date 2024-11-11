@@ -200,6 +200,7 @@
                 android:textSize="18sp" />
 
             <ImageView
+                android:id="@+id/mode_setting_btn"
                 android:layout_width="20dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="6dp"

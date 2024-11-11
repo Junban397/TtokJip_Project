@@ -52,6 +52,11 @@ class MainView : BaseDeviceManger() {
         // 기본적으로 즐겨찾기 필터를 적용하려면, 예를 들어 이곳에서 호출:
         applyFilter(FilterType.FAVORITE)
 
+
+        binding.modeSettingBtn.setOnClickListener {
+            dialogModeSetting()
+        }
+
         return binding.root
     }
 
@@ -128,6 +133,12 @@ class MainView : BaseDeviceManger() {
      **/
     private fun setupViewModel() {
         deviceViewModel = ViewModelProvider(this).get(DeviceViewModel::class.java)
+    }
+
+    private fun dialogModeSetting(){
+            val dialog = ModeSettingDialog()
+            dialog.show(parentFragmentManager, "CustomDialog")
+
     }
 
     override fun onDestroyView() {

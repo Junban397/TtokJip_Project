@@ -9,9 +9,6 @@ import com.example.ttokjip.viewmodel.FilterType
 open class BaseDeviceManger : Fragment() {
     protected lateinit var deviceViewModel: DeviceViewModel
 
-    // 필터 적용 함수
-
-
 
     // Device Info Dialog 출력
     protected fun showDeviceDialog(device: Device) {

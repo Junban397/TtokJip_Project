@@ -27,3 +27,16 @@ data class IsFavoriteRequest(
     val deviceId: String,
     val isFavorite: Boolean
 )
+
+data class ModeSetting(
+    val houseId: String,
+    val deviceId:String,
+    val deviceName:String,
+    val deviceLocation:String,
+    val mode:String,
+    val modeStatus:Boolean
+)
+
+data class ModeRequest(
+    val mode: String
+)

@@ -6,5 +6,12 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.7</item>
         <item name="android:windowElevation">10dp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="switch_toggle">
+        <item name="thumbTint">@color/white</item>
+        <item name="track">@drawable/switch_toggle_style</item>
+        <item name="android:thumb">@drawable/switch_toggle_thumb</item>
+        <item name="android:enabled">true</item>
     </style>
 </resources>

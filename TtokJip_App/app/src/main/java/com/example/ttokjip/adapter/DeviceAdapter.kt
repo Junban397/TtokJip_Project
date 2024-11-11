@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ttokjip.R
 import com.example.ttokjip.data.Device
+import com.example.ttokjip.data.ModeSetting
 import com.example.ttokjip.databinding.ItemDeviceManagerBinding
 
 class DeviceAdapter(
@@ -61,4 +62,5 @@ class DeviceAdapter(
             true // LongClick 이벤트가 처리되었음을 나타냄
         }
     }
+
 }
