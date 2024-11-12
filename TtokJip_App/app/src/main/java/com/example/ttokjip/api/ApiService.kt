@@ -32,9 +32,16 @@ interface ApiService {
     @GET("devices")
     suspend fun getDevices(@Header("Authorization") token: String): Response<List<Device>>
 
+    //모드셋팅 정보
     @GET("/devices/modeSetting")
     suspend fun fetchModeSetting(
         @Query("mode") mode: String,
         @Header("Authorization") token: String
     ): Response<List<ModeSetting>>
+
+    @PUT("/devices/updateModeSetting")
+    suspend fun updateModeSetting(
+        @Body modeRequest: ModeRequest,
+        @Header("Authorization") token: String
+    ): Response<ModeSetting>
 }

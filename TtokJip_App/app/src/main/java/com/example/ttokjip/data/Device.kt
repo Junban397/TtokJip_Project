@@ -38,5 +38,8 @@ data class ModeSetting(
 )
 
 data class ModeRequest(
-    val mode: String
+    val houseId: String,
+    val deviceId: String,
+    val mode: String,
+    val newStatus: Boolean
 )

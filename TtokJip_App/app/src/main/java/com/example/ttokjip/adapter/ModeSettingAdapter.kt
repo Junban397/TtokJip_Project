@@ -9,16 +9,22 @@ import com.example.ttokjip.data.ModeSetting
 import com.example.ttokjip.databinding.ItemDeviceManagerBinding
 import com.example.ttokjip.databinding.ItemModeManagerBinding
 
-class ModeSettingAdapter() :
-    ListAdapter<ModeSetting,ModeSettingAdapter.ModeSettingViewHolder>(ModeSettingDiffCallBack()) {
+class ModeSettingAdapter(
+    private val onModeStatusChanged: (ModeSetting, Boolean) -> Unit
+) :
+    ListAdapter<ModeSetting, ModeSettingAdapter.ModeSettingViewHolder>(ModeSettingDiffCallBack()) {
 
     inner class ModeSettingViewHolder(private val binding: ItemModeManagerBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(modeSetting: ModeSetting) {
-            binding.modeSetting=modeSetting
+            binding.modeSetting = modeSetting
             binding.executePendingBindings()
-            binding.modeStatusSwitch.isChecked=modeSetting.modeStatus
+            binding.modeStatusSwitch.isChecked = modeSetting.modeStatus
 
+            binding.modeStatusSwitch.setOnCheckedChangeListener { _, isChecked ->
+                // 상태 변경 시 상위 컴포넌트로 전달
+                onModeStatusChanged(modeSetting, isChecked)
+            }
         }
     }
 
@@ -31,7 +37,6 @@ class ModeSettingAdapter() :
 
     override fun onBindViewHolder(holder: ModeSettingViewHolder, position: Int) {
         holder.bind(getItem(position))
-        Log.d("ModeSettingAdapter", "Binding item at position: $position")
     }
 
 }

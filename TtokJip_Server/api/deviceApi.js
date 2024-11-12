@@ -132,9 +132,36 @@ const modeSetting = async (req, res) => {
     }
 };
 
+const modeSettingDeviceSwitch=async(req,res)=>{
+    const {houseId, deviceId, mode, newStatus } = req.body;
+    try{
+        await client.connect();
+        const database = client.db('ttokjip');
+        const collection = database.collection('mode');
+
+        const result = await collection.updateOne(
+            { houseId:houseId, mode:mode, "devices.deviceId": deviceId },  
+            { $set: { "devices.$.status": newStatus } }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).json({ message: '디바이스 즐겨찾기 상태가 성공적으로 변경되었습니다.' });
+        } else {
+            res.status(404).json({ message: '디바이스를 찾을 수 없습니다.' });
+        }
+
+    }catch (error) {
+        console.error(error);
+        res.status(500).json({ message: '서버 오류' });
+    } finally {
+        await client.close();
+    }
+};
+
 module.exports = { 
     getDevices,
     updateDeviceStatus,
     updateDeviceFavorite,
-    modeSetting 
+    modeSetting ,
+    modeSettingDeviceSwitch
 };
