@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import com.example.ttokjip.data.Device
 import com.example.ttokjip.data.IsFavoriteRequest
 import com.example.ttokjip.data.ModeRequest
 import com.example.ttokjip.data.ModeSetting
 import com.example.ttokjip.data.StatusRequest
+import com.example.ttokjip.data.UpdateModeRequest
 import com.example.ttokjip.network.RetrofitClient
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 class DeviceViewModel : ViewModel() {
@@ -112,6 +115,17 @@ class DeviceViewModel : ViewModel() {
         }catch (e: Exception) {
             // 오류 처리
         }
+    }
+    suspend fun deviceUpdateModeStatus(mode: String,token: String){
+            val modeRequest = UpdateModeRequest(mode)
+            val response =
+                RetrofitClient.apiService.updateModeDevice(modeRequest, "Bearer $token")
+            if (response.isSuccessful) {
+                fetchDevices(token)
+                Log.d("ModeSetting", "Mode status updated successfully.")
+            } else {
+                Log.e("ModeSetting", "Failed to update mode status: ${response.code()}")
+            }
     }
 }
 

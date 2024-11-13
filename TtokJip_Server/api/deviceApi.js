@@ -158,10 +158,53 @@ const modeSettingDeviceSwitch=async(req,res)=>{
     }
 };
 
+const modeSettingAllDeviceSwitch = async (req, res) => {
+    const { houseId } = req.user;
+    const { mode } = req.body;
+    console.log('Received request for mode:', mode);  // 추가된 로그
+    try {
+        await client.connect();
+        const database = client.db('ttokjip');
+
+
+        //houseId와 mode에 맞는 mode 데이터 가져오기
+        const modeData = await database.collection('mode').findOne({ houseId: houseId, mode: mode });
+
+        // modeData가 없을 경우 처리
+        if (!modeData) {
+            return res.status(404).json({ message: '해당 모드 데이터가 없습니다.' });
+        }
+
+        const bulkDeviceStatus=modeData.devices.map(modeDevice =>({
+            updateOne:{
+                filter: { houseId: houseId, deviceId: modeDevice.deviceId }, // houseId와 deviceId로 필터링
+                update: { $set: { deviceStatus: modeDevice.status } }         // mode의 상태로 업데이트
+            }
+
+        }));
+        const result = await database.collection('devices').bulkWrite(bulkDeviceStatus);
+
+        // 4. 상태가 업데이트된 디바이스 정보 반환
+        res.status(200).json({
+            message: '모든 디바이스의 상태가 모드에 맞게 변경되었습니다.',
+            matchedCount: result.matchedCount,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: '서버 오류' });
+    } finally {
+        await client.close();
+    }
+};
+
+
 module.exports = { 
     getDevices,
     updateDeviceStatus,
     updateDeviceFavorite,
     modeSetting ,
-    modeSettingDeviceSwitch
+    modeSettingDeviceSwitch,
+    modeSettingAllDeviceSwitch
 };

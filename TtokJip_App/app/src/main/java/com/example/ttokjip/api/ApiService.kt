@@ -5,6 +5,8 @@ import com.example.ttokjip.data.IsFavoriteRequest
 import com.example.ttokjip.data.ModeRequest
 import com.example.ttokjip.data.ModeSetting
 import com.example.ttokjip.data.StatusRequest
+import com.example.ttokjip.data.UpdateModeRequest
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -44,4 +46,10 @@ interface ApiService {
         @Body modeRequest: ModeRequest,
         @Header("Authorization") token: String
     ): Response<ModeSetting>
+
+    @PUT("/devices/updateModeDevice")
+    suspend fun updateModeDevice(
+        @Body modeRequest: UpdateModeRequest,
+        @Header("Authorization") token: String
+    ): Response<ResponseBody>
 }

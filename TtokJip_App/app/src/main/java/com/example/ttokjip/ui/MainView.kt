@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ttokjip.R
 import com.example.ttokjip.adapter.DeviceAdapter
 import com.example.ttokjip.data.Device
+import com.example.ttokjip.data.ModeRequest
+import com.example.ttokjip.data.ModeSetting
+import com.example.ttokjip.data.UpdateModeRequest
 import com.example.ttokjip.databinding.FragmentMainViewBinding
+import com.example.ttokjip.network.RetrofitClient
 import com.example.ttokjip.viewmodel.DeviceViewModel
 import com.example.ttokjip.viewmodel.FilterType
 import kotlinx.coroutines.launch
@@ -45,6 +50,17 @@ class MainView : BaseDeviceManger() {
                 deviceViewModel.fetchDevices(token)
             }
         }
+        val modeButtons = mapOf(
+            binding.outingModeBtn to "outing",
+            binding.homeComeModeBtnBtn to "homecoming",
+            binding.sleepingModeBtn to "sleeping",
+            binding.ventModeModeBtn to "vent",
+            binding.powerSavingModeBtn to "powerSaving"
+        )
+        modeButtons.forEach { (button, mode) ->
+            button.setOnClickListener { updateModeStatusOnServer(mode,token!!) }
+        }
+
 
         setupRecyclerView(token!!)
         setupViewModelObservers()
@@ -126,6 +142,15 @@ class MainView : BaseDeviceManger() {
 
         adapter.submitList(filteredDevices)  // 필터링된 디바이스 목록을 Adapter에 제출
         return filteredDevices // 필터링된 리스트 반환
+    }
+
+    /**
+     *모드 일괄적용
+     **/
+    private fun updateModeStatusOnServer(mode: String, token: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            deviceViewModel.deviceUpdateModeStatus(mode,token)
+        }
     }
 
     /**
