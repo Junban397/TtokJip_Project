@@ -43,3 +43,7 @@ data class ModeRequest(
     val mode: String,
     val newStatus: Boolean
 )
+
+data class UpdateModeRequest(
+    val mode: String
+)

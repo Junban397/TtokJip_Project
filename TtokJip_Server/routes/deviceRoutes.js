@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/authMiddleware');
-const { getDevices, updateDeviceStatus, updateDeviceFavorite, modeSetting, modeSettingDeviceSwitch } = require('../api/deviceApi');
+const { getDevices, updateDeviceStatus, updateDeviceFavorite, modeSetting, modeSettingDeviceSwitch, modeSettingAllDeviceSwitch } = require('../api/deviceApi');
 
 // 디바이스 정보를 가져오는 API
 router.get('/', authenticateToken, getDevices);
@@ -17,5 +17,9 @@ router.get('/modeSetting',authenticateToken,modeSetting)
 
 // 모드셋팅 상태 변경 API
 router.put('/updateModeSetting', authenticateToken, modeSettingDeviceSwitch); 
+
+// 모드셋팅 디바이스 상태 변경 API
+router.put('/updateModeDevice', authenticateToken, modeSettingAllDeviceSwitch); 
+
 
 module.exports = router;
