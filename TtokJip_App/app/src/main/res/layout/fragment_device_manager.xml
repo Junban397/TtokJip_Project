@@ -20,7 +20,7 @@
             android:lineSpacingExtra="8dp"
             android:text="똑.집\n제품관리"
             android:textColor="@color/black"
-            android:textSize="21sp" />
+            android:textSize="28sp" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"

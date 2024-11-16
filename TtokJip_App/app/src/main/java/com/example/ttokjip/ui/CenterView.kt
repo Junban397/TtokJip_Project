@@ -43,6 +43,14 @@ class CenterView : AppCompatActivity() {
                     setFragmentView(DeviceManagerView())
                     true
                 }
+                R.id.menu_chart -> {
+                    setFragmentView(StatisticsView())
+                    true
+                }
+                R.id.menu_setting -> {
+                    setFragmentView(SettingView())
+                    true
+                }
                 else -> false
             }
         }

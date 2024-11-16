@@ -53,6 +53,9 @@ android {
 }
 
 dependencies {
+
+    //그래프
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     //소켓
     implementation("io.socket:socket.io-client:2.0.0")
     // OkHttp
