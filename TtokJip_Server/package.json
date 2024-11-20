@@ -7,6 +7,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.10.0",
     "mongoose": "^8.7.3",
+    "serialport": "^12.0.0",
     "socket.io": "^4.8.1"
   },
   "name": "ttokjip_server",
