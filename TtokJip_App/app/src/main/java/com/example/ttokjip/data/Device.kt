@@ -47,3 +47,8 @@ data class ModeRequest(
 data class UpdateModeRequest(
     val mode: String
 )
+
+data class SensorData(
+    val temperature: Float,
+    val humidity: Float
+)
