@@ -148,7 +148,8 @@ class CenterView : AppCompatActivity() {
                 setFragmentView(MainView())  // MainView로 이동
             } else {
                 dismissLoadingDialog()  // 연결 실패 시 로딩 다이얼로그 종료
-                Toast.makeText(this, "블루투스 연결 실패", Toast.LENGTH_SHORT).show()
+                setFragmentView(MainView())  // MainView로 이동
+//                Toast.makeText(this, "블루투스 연결 실패", Toast.LENGTH_SHORT).show()
             }
         }
     }

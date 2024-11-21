@@ -19,7 +19,16 @@ object BluetoothManager {
     fun init(context: Context): Boolean {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter == null) {
+            (context as? Activity)?.runOnUiThread {
             Toast.makeText(context, "블루투스를 지원하지 않는 기기입니다.", Toast.LENGTH_SHORT).show()
+            }
+            return false
+        }
+
+        if (!bluetoothAdapter!!.isEnabled) {
+            (context as? Activity)?.runOnUiThread {
+                Toast.makeText(context, "블루투스를 켜주세요.", Toast.LENGTH_SHORT).show()
+            }
             return false
         }
         return true
