@@ -1,16 +1,21 @@
 package com.example.ttokjip.ui
 
+import BluetoothManager
 import GridSpacingItemDecoration
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,6 +35,8 @@ class MainView : BaseDeviceManger() {
     private lateinit var adapter: DeviceAdapter
     private var _binding: FragmentMainViewBinding? = null
     private val binding get() = _binding!!
+    private lateinit var bluetoothManager: BluetoothManager
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +45,13 @@ class MainView : BaseDeviceManger() {
         _binding = FragmentMainViewBinding.inflate(inflater, container, false)
 
         setupViewModel()
-
+        bluetoothManager = BluetoothManager // BluetoothManager를 인스턴스화
+        // BluetoothManager를 통해 연결이 되어 있는지 확인
+        if (BluetoothManager.isBluetoothConnected()) {
+            startReadingData()
+        } else {
+            Toast.makeText(context, "Bluetooth 연결이 필요합니다.", Toast.LENGTH_SHORT).show()
+        }
         // 토큰 가져오기
         val sharedPreferences =
             requireContext().getSharedPreferences("userPreferences", Context.MODE_PRIVATE)
@@ -164,6 +177,36 @@ class MainView : BaseDeviceManger() {
             val dialog = ModeSettingDialog()
             dialog.show(parentFragmentManager, "CustomDialog")
 
+    }
+
+    private fun startReadingData() {
+        Log.d("BluetoothService", "수신을 시작함")
+        val buffer = StringBuilder() // 수신된 데이터를 누적할 버퍼
+
+        bluetoothManager.getReceivedData().observe(viewLifecycleOwner, Observer { data ->
+            Log.d("BluetoothService", "수신된 데이터: $data")
+            buffer.append(data) // 데이터를 버퍼에 추가
+
+            // 데이터가 "숫자, 숫자" 형식이면 처리
+            if (buffer.contains(",")) {
+                val fullData = buffer.toString().trim() // 누적된 데이터를 완전하게 처리
+                val regex = "([0-9.]+),\\s*([0-9.]+)".toRegex()
+                val matchResult = regex.find(fullData)
+
+                if (matchResult != null) {
+                    val temperature = matchResult.groupValues[1].toFloat()
+                    val humidity = matchResult.groupValues[2].toFloat()
+
+                    Log.d("BluetoothService", "온도: $temperature, 습도: $humidity")
+                    // 온도와 습도를 화면에 표시
+                    binding.temp.text = "$temperature°C"
+                    binding.humt.text="$humidity%"
+
+                    // 처리 후 버퍼 초기화
+                    buffer.clear()
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {
