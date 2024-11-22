@@ -6,6 +6,7 @@ data class Device(
     val deviceId: String,
     val houseId: String,
     var deviceType: String,
+    var sensorName:String,
     var deviceName: String,
     var deviceLocation: String,
     var deviceStatus:Boolean,

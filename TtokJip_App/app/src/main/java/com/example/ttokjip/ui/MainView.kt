@@ -187,27 +187,88 @@ class MainView : BaseDeviceManger() {
             Log.d("BluetoothService", "수신된 데이터: $data")
             buffer.append(data) // 데이터를 버퍼에 추가
 
-            // 데이터가 "숫자, 숫자" 형식이면 처리
-            if (buffer.contains(",")) {
-                val fullData = buffer.toString().trim() // 누적된 데이터를 완전하게 처리
-                val regex = "([0-9.]+),\\s*([0-9.]+)".toRegex()
-                val matchResult = regex.find(fullData)
+            // 구분자("><")를 기준으로 데이터를 분리
+            while (buffer.contains(">") && buffer.contains("<")) {
+                val startIndex = buffer.indexOf("<")
+                val endIndex = buffer.indexOf(">")
 
-                if (matchResult != null) {
-                    val temperature = matchResult.groupValues[1].toFloat()
-                    val humidity = matchResult.groupValues[2].toFloat()
+                if (startIndex < endIndex) {
+                    val message = buffer.substring(startIndex + 1, endIndex) // <> 사이의 데이터 추출
+                    buffer.delete(0, endIndex + 1) // 처리한 데이터 제거
 
-                    Log.d("BluetoothService", "온도: $temperature, 습도: $humidity")
-                    // 온도와 습도를 화면에 표시
-                    binding.temp.text = "$temperature°C"
-                    binding.humt.text="$humidity%"
-
-                    // 처리 후 버퍼 초기화
-                    buffer.clear()
+                    processMessage(message.trim()) // 메시지 처리
+                } else {
+                    buffer.delete(0, startIndex) // 형식이 잘못된 경우 시작 인덱스 이전 데이터 제거
                 }
             }
         })
     }
+
+    /**
+     * 수신 메시지를 처리
+     */
+    private fun processMessage(message: String) {
+        when {
+            message.startsWith("DHT:") -> { // 온도 및 습도 데이터 처리
+                val dhtData = message.substringAfter("DHT:").split(",")
+                if (dhtData.size == 2) {
+                    val temperature = dhtData[0].toFloatOrNull()
+                    val humidity = dhtData[1].toFloatOrNull()
+
+                    if (temperature != null && humidity != null) {
+                        Log.d("BluetoothService", "온도: $temperature, 습도: $humidity")
+                        binding.temp.text = "$temperature°C"
+                        binding.humt.text = "$humidity%"
+                    }
+                }
+            }
+            message.startsWith("MQ2:") -> { // MQ-2 데이터 처리
+                val mq2Value = message.substringAfter("MQ2:").toIntOrNull()
+                if (mq2Value != null) {
+                    Log.d("BluetoothService", "MQ-2 가스 값: $mq2Value")
+                    binding.sensorFire.text = when (mq2Value) {
+                        in 0..100 -> {
+                            binding.sensorFire.setTextColor(Color.GREEN)
+                            "이상없음"
+                        }
+                        in 101..300 -> {
+                            binding.sensorFire.setTextColor(Color.parseColor("#FFA500"))
+                            "주의"
+                        }
+                        in 301..1000 ->{
+                            binding.sensorFire.setTextColor(Color.RED)
+                            "경고"
+                        }
+                        else -> {
+                            binding.sensorFire.setTextColor(Color.RED)
+                            "점검"
+                        }
+                    }
+                }
+            }
+            message.startsWith("PIR:") -> { // PIR 데이터 처리
+                val pirStatus = message.substringAfter("PIR:").trim()
+                Log.d("BluetoothService", "PIR 센서 상태: $pirStatus")
+                binding.sensorRip.text = when (pirStatus) {
+                    "detect" -> {
+                        binding.sensorRip.setTextColor(Color.RED)
+                        "움직임 감지"}
+                    "safety" -> {
+                        binding.sensorRip.setTextColor(Color.GREEN)
+                        "이상 없음"}
+                    else -> {
+                        binding.sensorRip.setTextColor(Color.BLACK)
+                        "OFF"
+                    }
+                }
+            }
+            else -> {
+                Log.w("BluetoothService", "알 수 없는 데이터 형식: $message")
+            }
+        }
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
