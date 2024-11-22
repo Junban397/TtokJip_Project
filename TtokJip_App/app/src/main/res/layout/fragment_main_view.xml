@@ -425,6 +425,7 @@
                                 android:textSize="14sp" />
 
                             <TextView
+                                android:id="@+id/sensor_rip"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="이상 없음"
@@ -469,6 +470,7 @@
                                 android:textSize="14sp" />
 
                             <TextView
+                                android:id="@+id/sensor_fire"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="이상 없음"

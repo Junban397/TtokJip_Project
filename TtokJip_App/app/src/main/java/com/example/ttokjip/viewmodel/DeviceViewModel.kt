@@ -34,6 +34,11 @@ class DeviceViewModel : ViewModel() {
                 val devices = response.body() ?: emptyList()
                 _deviceList.postValue(devices)
                 _filteredDeviceList.postValue(devices) // 처음에는 모든 데이터로 설정
+                for (device in devices){
+                    bluetoothStatus(device.sensorName, device.deviceStatus)
+                }
+
+                Log.d("ModeSettingaaaaaaaaaaaaaaaaa", "Mode devices fetched: ${devices} devices found")
             }
         } catch (e: Exception) {
             // 오류 처리
@@ -89,6 +94,8 @@ class DeviceViewModel : ViewModel() {
             val statusRequest = StatusRequest(deviceId, newStatus)
 
             val response = RetrofitClient.apiService.updateDeviceStatus(deviceId, statusRequest, "Bearer $token")
+            //블루투스 수신
+            bluetoothStatus(device.sensorName,newStatus)
 
             if (response.isSuccessful) {
                 fetchDevices(token)  // 디바이스 목록 갱신
@@ -126,6 +133,17 @@ class DeviceViewModel : ViewModel() {
             } else {
                 Log.e("ModeSetting", "Failed to update mode status: ${response.code()}")
             }
+    }
+    private fun bluetoothStatus(sensorName:String, sensorNewStatus:Boolean){
+
+        var messageStatus="$sensorName:$sensorNewStatus "
+        Log.e("ModeSetting", "Failed to update mode status: $messageStatus")
+        if (BluetoothManager.isBluetoothConnected()) {
+            BluetoothManager.sendData(messageStatus)
+        } else {
+            // 연결되지 않은 경우 처리
+        }
+
     }
 }
 
