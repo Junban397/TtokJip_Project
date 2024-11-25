@@ -262,6 +262,11 @@ class MainView : BaseDeviceManger() {
                     }
                 }
             }
+            message.startsWith("Power:") -> { // PIR 데이터 처리
+                val wattage = message.substringAfter("Power:").trim()
+                Log.d("BluetoothService", "power 소모량: $wattage")
+            }
+
             else -> {
                 Log.w("BluetoothService", "알 수 없는 데이터 형식: $message")
             }
@@ -270,8 +275,8 @@ class MainView : BaseDeviceManger() {
 
 
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
 }

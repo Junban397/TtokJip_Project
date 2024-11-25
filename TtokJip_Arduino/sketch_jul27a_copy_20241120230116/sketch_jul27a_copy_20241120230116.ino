@@ -144,6 +144,7 @@ void sendData()
   } else {
     data += "<PIR:off>";
   }
+  data += "<Power:" + String(power) + ">";  // 전력 (와트) 추가
   
   bleSerial.print(data);
   bleSerial.println();  // 데이터 끝에 줄 바꿈 추가
