@@ -3,6 +3,7 @@ package com.example.ttokjip.ui
 import BluetoothManager
 import GridSpacingItemDecoration
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -24,19 +25,38 @@ import com.example.ttokjip.adapter.DeviceAdapter
 import com.example.ttokjip.data.Device
 import com.example.ttokjip.data.ModeRequest
 import com.example.ttokjip.data.ModeSetting
+import com.example.ttokjip.data.SensorDataRequest
 import com.example.ttokjip.data.UpdateModeRequest
 import com.example.ttokjip.databinding.FragmentMainViewBinding
 import com.example.ttokjip.network.RetrofitClient
+import com.example.ttokjip.network.RetrofitClient.apiService
 import com.example.ttokjip.viewmodel.DeviceViewModel
 import com.example.ttokjip.viewmodel.FilterType
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainView : BaseDeviceManger() {
     private lateinit var adapter: DeviceAdapter
     private var _binding: FragmentMainViewBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var bluetoothManager: BluetoothManager
+    private var totalWattage: Float = 0.0f
+    private var temperature: Float = 0.0f
+    private var humidity: Float = 0.0f
+    private var token: String = ""
+
+    // Handler와 Runnable을 정의
     private val handler = Handler(Looper.getMainLooper())
+    private val runnable = object : Runnable {
+        override fun run() {
+            // 10초마다 실행될 코드
+            handler.postDelayed(this, 10000) // 10초마다 실행되도록 설정
+            uploadSensorDataToServer() // 서버로 데이터 업로드
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,16 +66,12 @@ class MainView : BaseDeviceManger() {
 
         setupViewModel()
         bluetoothManager = BluetoothManager // BluetoothManager를 인스턴스화
-        // BluetoothManager를 통해 연결이 되어 있는지 확인
-        if (BluetoothManager.isBluetoothConnected()) {
-            startReadingData()
-        } else {
-            Toast.makeText(context, "Bluetooth 연결이 필요합니다.", Toast.LENGTH_SHORT).show()
-        }
+
+
         // 토큰 가져오기
         val sharedPreferences =
             requireContext().getSharedPreferences("userPreferences", Context.MODE_PRIVATE)
-        val token = sharedPreferences.getString("token", null)
+        token = sharedPreferences.getString("token", "") ?: ""
 
         // 토큰이 null이 아니면 디바이스 목록을 가져오기
         if (token != null) {
@@ -71,12 +87,13 @@ class MainView : BaseDeviceManger() {
             binding.powerSavingModeBtn to "powerSaving"
         )
         modeButtons.forEach { (button, mode) ->
-            button.setOnClickListener { updateModeStatusOnServer(mode,token!!) }
+            button.setOnClickListener { updateModeStatusOnServer(mode, token!!) }
         }
 
 
         setupRecyclerView(token!!)
         setupViewModelObservers()
+        setupBluetoothManager()
 
         // 기본적으로 즐겨찾기 필터를 적용하려면, 예를 들어 이곳에서 호출:
         applyFilter(FilterType.FAVORITE)
@@ -87,6 +104,18 @@ class MainView : BaseDeviceManger() {
         }
 
         return binding.root
+    }
+    override fun onStart() {
+        super.onStart()
+        // 10초마다 uploadSensorDataToServer 호출
+        handler.post(runnable)
+    }
+
+    // onStop에서 반복 작업을 멈춤
+    override fun onStop() {
+        super.onStop()
+        // 반복 작업 멈추기
+        handler.removeCallbacks(runnable)
     }
 
     /**
@@ -103,7 +132,7 @@ class MainView : BaseDeviceManger() {
             onFavoriteClick = { deviceId ->
                 // 코루틴 내에서 호출
                 viewLifecycleOwner.lifecycleScope.launch {
-                    deviceViewModel.deviceFavoriteSwitch(deviceId,token)
+                    deviceViewModel.deviceFavoriteSwitch(deviceId, token)
                 }
             },
             onLongClick = { device -> showDeviceDialog(device) }
@@ -162,7 +191,7 @@ class MainView : BaseDeviceManger() {
      **/
     private fun updateModeStatusOnServer(mode: String, token: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            deviceViewModel.deviceUpdateModeStatus(mode,token)
+            deviceViewModel.deviceUpdateModeStatus(mode, token)
         }
     }
 
@@ -173,110 +202,129 @@ class MainView : BaseDeviceManger() {
         deviceViewModel = ViewModelProvider(this).get(DeviceViewModel::class.java)
     }
 
-    private fun dialogModeSetting(){
-            val dialog = ModeSettingDialog()
-            dialog.show(parentFragmentManager, "CustomDialog")
+    private fun dialogModeSetting() {
+        val dialog = ModeSettingDialog()
+        dialog.show(parentFragmentManager, "CustomDialog")
 
     }
 
-    private fun startReadingData() {
-        Log.d("BluetoothService", "수신을 시작함")
-        val buffer = StringBuilder() // 수신된 데이터를 누적할 버퍼
-
-        bluetoothManager.getReceivedData().observe(viewLifecycleOwner, Observer { data ->
-            Log.d("BluetoothService", "수신된 데이터: $data")
-            buffer.append(data) // 데이터를 버퍼에 추가
-
-            // 구분자("><")를 기준으로 데이터를 분리
-            while (buffer.contains(">") && buffer.contains("<")) {
-                val startIndex = buffer.indexOf("<")
-                val endIndex = buffer.indexOf(">")
-
-                if (startIndex < endIndex) {
-                    val message = buffer.substring(startIndex + 1, endIndex) // <> 사이의 데이터 추출
-                    buffer.delete(0, endIndex + 1) // 처리한 데이터 제거
-
-                    processMessage(message.trim()) // 메시지 처리
-                } else {
-                    buffer.delete(0, startIndex) // 형식이 잘못된 경우 시작 인덱스 이전 데이터 제거
-                }
-            }
-        })
+    private fun setupBluetoothManager() {
+        if (bluetoothManager.isBluetoothConnected()) {
+            startReadingBluetoothData()
+        } else {
+            Toast.makeText(context, "Bluetooth 연결이 필요합니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    /**
-     * 수신 메시지를 처리
-     */
-    private fun processMessage(message: String) {
+    override fun processBluetoothMessage(message: String) {
         when {
-            message.startsWith("DHT:") -> { // 온도 및 습도 데이터 처리
-                val dhtData = message.substringAfter("DHT:").split(",")
-                if (dhtData.size == 2) {
-                    val temperature = dhtData[0].toFloatOrNull()
-                    val humidity = dhtData[1].toFloatOrNull()
+            message.startsWith("DHT:") -> processDhtMessage(message)
+            message.startsWith("MQ2:") -> processMq2Message(message)
+            message.startsWith("PIR:") -> processPirMessage(message)
+            message.startsWith("Power:") -> processPowerMessage(message)
+            else -> Log.w("MainView", "알 수 없는 메시지: $message")
+        }
+    }
 
-                    if (temperature != null && humidity != null) {
-                        Log.d("BluetoothService", "온도: $temperature, 습도: $humidity")
-                        binding.temp.text = "$temperature°C"
-                        binding.humt.text = "$humidity%"
-                    }
-                }
+    private fun processDhtMessage(message: String) {
+        val data = message.substringAfter("DHT:").split(",")
+        if (data.size == 2) {
+            temperature = data[0].toFloatOrNull() ?: 0.0f
+            humidity = data[1].toFloatOrNull() ?: 0.0f
+            binding.temp.text = "$temperature°C"
+            binding.humt.text = "$humidity%"
+        }
+    }
+
+    private fun processMq2Message(message: String) {
+        val mq2Value = message.substringAfter("MQ2:").toIntOrNull()
+        binding.sensorFire.text = when (mq2Value) {
+            in 0..100 -> {
+                binding.sensorFire.setTextColor(Color.GREEN)
+                "이상없음"
             }
-            message.startsWith("MQ2:") -> { // MQ-2 데이터 처리
-                val mq2Value = message.substringAfter("MQ2:").toIntOrNull()
-                if (mq2Value != null) {
-                    Log.d("BluetoothService", "MQ-2 가스 값: $mq2Value")
-                    binding.sensorFire.text = when (mq2Value) {
-                        in 0..100 -> {
-                            binding.sensorFire.setTextColor(Color.GREEN)
-                            "이상없음"
-                        }
-                        in 101..300 -> {
-                            binding.sensorFire.setTextColor(Color.parseColor("#FFA500"))
-                            "주의"
-                        }
-                        in 301..1000 ->{
-                            binding.sensorFire.setTextColor(Color.RED)
-                            "경고"
-                        }
-                        else -> {
-                            binding.sensorFire.setTextColor(Color.RED)
-                            "점검"
-                        }
-                    }
-                }
+
+            in 101..300 -> {
+                binding.sensorFire.setTextColor(Color.parseColor("#FFA500"))
+                "주의"
             }
-            message.startsWith("PIR:") -> { // PIR 데이터 처리
-                val pirStatus = message.substringAfter("PIR:").trim()
-                Log.d("BluetoothService", "PIR 센서 상태: $pirStatus")
-                binding.sensorRip.text = when (pirStatus) {
-                    "detect" -> {
-                        binding.sensorRip.setTextColor(Color.RED)
-                        "움직임 감지"}
-                    "safety" -> {
-                        binding.sensorRip.setTextColor(Color.GREEN)
-                        "이상 없음"}
-                    else -> {
-                        binding.sensorRip.setTextColor(Color.BLACK)
-                        "OFF"
-                    }
-                }
-            }
-            message.startsWith("Power:") -> { // PIR 데이터 처리
-                val wattage = message.substringAfter("Power:").trim()
-                Log.d("BluetoothService", "power 소모량: $wattage")
+
+            in 301..1000 -> {
+                binding.sensorFire.setTextColor(Color.RED)
+                "경고"
             }
 
             else -> {
-                Log.w("BluetoothService", "알 수 없는 데이터 형식: $message")
+                binding.sensorFire.setTextColor(Color.RED)
+                "점검"
             }
         }
     }
 
+    private fun processPirMessage(message: String) {
+        val pirStatus = message.substringAfter("PIR:").trim()
+        binding.sensorRip.text = when (pirStatus) {
+            "detect" -> {
+                binding.sensorRip.setTextColor(Color.RED)
+                "움직임 감지"
+            }
 
+            "safety" -> {
+                binding.sensorRip.setTextColor(Color.GREEN)
+                "이상 없음"
+            }
 
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        _binding = null
-//    }
+            else -> {
+                binding.sensorRip.setTextColor(Color.BLACK)
+                "OFF"
+            }
+        }
+
+    }
+
+    private fun processPowerMessage(message: String) {
+        val power = message.substringAfter("Power:").toFloatOrNull()
+        if (power != null) {
+            totalWattage += power
+            Log.d("MainView", "누적 전력량: $totalWattage")
+        }
+    }
+
+    /**
+     * 로그 업로드
+     */
+    private fun uploadSensorDataToServer() {
+        // 비동기 작업을 위한 코루틴
+        lifecycleScope.launch {
+            try {
+                val sensorData = SensorDataRequest(
+                    date = getCurrentDate(),
+                    temperature = temperature,
+                    humidity = humidity,
+                    totalWattage = totalWattage
+                )
+                val response = apiService.uploadSensorData(sensorData, "Bearer $token")
+
+                if (response.isSuccessful) {
+                    Log.d("uploadSensorData", "센서 데이터 업로드 성공!")
+                    totalWattage = 0.0f
+                } else {
+                    Log.e("uploadSensorData", "센서 데이터 업로드 실패: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("uploadSensorData", "업로드 중 오류 발생: ${e.message}")
+            }
+        }
+    }
+
+    private fun getCurrentDate(): String {
+        // 현재 날짜를 String으로 변환하는 로직
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return sdf.format(Date())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // 업로드 완료 후 뷰를 안전하게 파괴
+    }
 }

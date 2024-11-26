@@ -49,7 +49,24 @@ data class UpdateModeRequest(
     val mode: String
 )
 
-data class SensorData(
+data class SensorDataRequest(
+    val date: String,
     val temperature: Float,
-    val humidity: Float
+    val humidity: Float,
+    val totalWattage: Float
+)
+data class GetLogDate(
+    val date:String
+)
+data class StatisticsResponse(
+    val weeklyData: List<WeeklyData>,      // 예: 일주일간의 온도 및 습도 변화
+    val monthlyTotalWattage: Float,        // 이번 달 총 전력량
+    val lastMonthTotalWattage: Float,      // 저번 달 총 전력량
+    val totalWattageAvg: Float            // 평균 전력량
+)
+
+data class WeeklyData(
+    val date: String,                      // 날짜
+    val temperature: Float,                // 온도
+    val humidity: Float                    // 습도
 )

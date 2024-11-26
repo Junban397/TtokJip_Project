@@ -30,13 +30,11 @@ class CenterView : AppCompatActivity() {
 
         // 로그인 상태 확인
         val token = sharedPreferences.getString("token", null)
-
         // 토큰이 없으면 로그인 화면으로 이동
         if (token == null) {
             navigateToLogin()
         } else {
             // 로그인 상태라면, MainView Fragment 설정
-
         }
 
         // Bluetooth 초기화 및 연결
@@ -50,7 +48,7 @@ class CenterView : AppCompatActivity() {
                 startActivityForResult(enableBtIntent, 1)
             } else {
                 // 블루투스가 이미 활성화되었으면 기기 목록을 다이얼로그로 띄운다
-                showPairedDevicesDialog()
+                autoConnectBluetooth()
             }
         }
 
@@ -113,6 +111,20 @@ class CenterView : AppCompatActivity() {
         }
         fragmentTransaction.commit()
     }
+    /** 이전에 연결된 블루투스 장치 자동 연결 */
+    private fun autoConnectBluetooth() {
+        val savedDeviceAddress = sharedPreferences.getString("bluetooth_device_address", null)
+        if (!savedDeviceAddress.isNullOrEmpty()) {
+            val device = bluetoothAdapter?.bondedDevices?.find { it.address == savedDeviceAddress }
+            if (device != null) {
+                showLoadingDialog()
+                connectToBluetoothDevice(device)
+                return
+            }
+        }
+        showPairedDevicesDialog()
+    }
+
     /** 블루투스 연결 시도
      * 사용할 BluetoothDevice를 선택하여 연결을 시도합니다.
      */
@@ -130,6 +142,7 @@ class CenterView : AppCompatActivity() {
         builder.setTitle("연결할 블루투스 기기 선택")
         builder.setItems(deviceNames.toTypedArray()) { _, which ->
             val selectedDevice = pairedDevices.elementAt(which)
+            saveBluetoothDevice(selectedDevice)
             showLoadingDialog()
             connectToBluetoothDevice(selectedDevice)
         }
@@ -143,15 +156,20 @@ class CenterView : AppCompatActivity() {
     private fun connectToBluetoothDevice(device: BluetoothDevice) {
         // 블루투스 연결 시도 (BluetoothManager에서 연결 처리)
         BluetoothManager.connectToDevice(device, this) { isConnected ->
+            dismissLoadingDialog()  // 연결 실패 시 로딩 다이얼로그 종료
             if (isConnected) {
-                dismissLoadingDialog()  // 연결 성공 시 로딩 다이얼로그 종료
                 setFragmentView(MainView())  // MainView로 이동
             } else {
-                dismissLoadingDialog()  // 연결 실패 시 로딩 다이얼로그 종료
                 setFragmentView(MainView())  // MainView로 이동
 //                Toast.makeText(this, "블루투스 연결 실패", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    /** 블루투스 장치 정보 저장 */
+    private fun saveBluetoothDevice(device: BluetoothDevice) {
+        val editor = sharedPreferences.edit()
+        editor.putString("bluetooth_device_address", device.address)
+        editor.apply()
     }
     // 로딩 다이얼로그 표시
     private fun showLoadingDialog() {
