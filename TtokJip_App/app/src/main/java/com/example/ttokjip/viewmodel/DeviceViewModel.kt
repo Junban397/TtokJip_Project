@@ -143,8 +143,8 @@ class DeviceViewModel : ViewModel() {
         } else {
             // 연결되지 않은 경우 처리
         }
-
     }
+
 }
 
 enum class FilterType {

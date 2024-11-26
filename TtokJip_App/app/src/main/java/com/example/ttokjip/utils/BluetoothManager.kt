@@ -3,6 +3,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -39,6 +40,7 @@ object BluetoothManager {
         bluetoothDevice = device
         val uuid = device.uuids.first().uuid
         bluetoothSocket = device.createRfcommSocketToServiceRecord(uuid)
+        Log.w("qwerqweraa", "알 수 없는 데이터 형식: $bluetoothSocket")
 
         Thread {
             try {

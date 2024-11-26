@@ -1,9 +1,12 @@
 package com.example.ttokjip.network
 
 import com.example.ttokjip.data.Device
+import com.example.ttokjip.data.GetLogDate
 import com.example.ttokjip.data.IsFavoriteRequest
 import com.example.ttokjip.data.ModeRequest
 import com.example.ttokjip.data.ModeSetting
+import com.example.ttokjip.data.SensorDataRequest
+import com.example.ttokjip.data.StatisticsResponse
 import com.example.ttokjip.data.StatusRequest
 import com.example.ttokjip.data.UpdateModeRequest
 import okhttp3.ResponseBody
@@ -52,4 +55,15 @@ interface ApiService {
         @Body modeRequest: UpdateModeRequest,
         @Header("Authorization") token: String
     ): Response<ResponseBody>
+
+    @POST("/log/uploadData")
+    suspend fun uploadSensorData(
+        @Body sensorData: SensorDataRequest,
+        @Header("Authorization") token: String
+    ): Response<ResponseBody>
+    @GET("/log/statistics")
+    suspend fun getStatistics(
+        @Query("date") logDate:String,
+        @Header("Authorization") token: String
+    ): Response<StatisticsResponse>
 }

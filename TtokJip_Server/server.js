@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const { connectDB } = require('./connectionDb');
 const authRoutes = require('./routes/authRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
-const logRoutes = require('./routes/logRoutes');
+const statisticsRoutes = require('./routes/statisticsRoutes');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -17,7 +17,7 @@ connectDB();
 // 라우트 설정
 app.use('/auth', authRoutes);  // 인증 관련 라우트
 app.use('/devices', deviceRoutes);  // 디바이스 관련 라우트
-app.use('/log', logRoutes); // 로그 관련 라우트
+app.use('/log', statisticsRoutes); // 로그 관련 라우트
 
 // 서버 시작
 app.listen(port, () => {
