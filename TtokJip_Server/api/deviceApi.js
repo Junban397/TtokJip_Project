@@ -204,7 +204,7 @@ module.exports = {
     getDevices,
     updateDeviceStatus,
     updateDeviceFavorite,
-    modeSetting ,
+    modeSetting,
     modeSettingDeviceSwitch,
     modeSettingAllDeviceSwitch
 };

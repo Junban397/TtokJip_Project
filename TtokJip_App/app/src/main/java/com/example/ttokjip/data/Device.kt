@@ -62,7 +62,7 @@ data class StatisticsResponse(
     val weeklyData: List<WeeklyData>,      // 예: 일주일간의 온도 및 습도 변화
     val monthlyTotalWattage: Float,        // 이번 달 총 전력량
     val lastMonthTotalWattage: Float,      // 저번 달 총 전력량
-    val totalWattageAvg: Float            // 평균 전력량
+    val averageMonthlyWattage: Float            // 평균 전력량
 )
 
 data class WeeklyData(
