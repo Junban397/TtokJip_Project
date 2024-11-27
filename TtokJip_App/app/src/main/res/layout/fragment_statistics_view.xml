@@ -80,13 +80,14 @@
                     android:textSize="24dp" />
 
                 <TextView
+                    android:id="@+id/last_month_feedback"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
-                    android:fontFamily="@font/a1009_2"
+                    android:fontFamily="@font/a1009_1"
                     android:gravity="center|left"
                     android:padding="4dp"
                     android:text="테스트"
-                    android:textSize="18dp" />
+                    android:textSize="12dp" />
 
             </LinearLayout>
 
@@ -121,13 +122,14 @@
                     android:textSize="24dp" />
 
                 <TextView
+                    android:id="@+id/this_month_feedback"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
-                    android:fontFamily="@font/a1009_2"
+                    android:fontFamily="@font/a1009_1"
                     android:gravity="center|left"
                     android:padding="4dp"
                     android:text="테스트"
-                    android:textSize="18dp" />
+                    android:textSize="12dp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -143,10 +145,12 @@
             android:textSize="20dp" />
 
         <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/weekly_line_chart"
             android:background="@drawable/text_view_stroke"
             android:layout_margin="20dp"
             android:layout_width="match_parent"
-            android:layout_height="253dp" />
+            android:layout_height="match_parent" />
     </LinearLayout>
+\
 
 </FrameLayout>

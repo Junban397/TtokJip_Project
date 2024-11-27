@@ -12,14 +12,17 @@ const uploadSensorData = async (req, res) => {
     }
 
     try {
+        await client.connect();
+        const database = client.db('ttokjip');
+        const collection = database.collection('logs');
         // 기존 데이터를 확인
         const existingLog = await collection.findOne({ houseId, date });
 
         if (existingLog) {
             const updatedLog = {
-                temperature: (existingLog.temperature + temperature) / 2,
-                humidity: (existingLog.humidity + humidity) / 2,
-                totalWattage: existingLog.totalWattage + totalWattage,
+                temperature: parseFloat(((existingLog.temperature + temperature) / 2).toFixed(2)),
+                humidity: parseFloat(((existingLog.humidity + humidity) / 2).toFixed(2)),
+                totalWattage: parseFloat((existingLog.totalWattage + totalWattage).toFixed(2)),
             };
 
             await collection.updateOne(
@@ -104,17 +107,38 @@ const getStatistics = async (req, res) => {
         const lastMonthTotalWattage = lastMonthLogs.reduce((sum, log) => sum + log.totalWattage, 0);
 
         // 4. 모든 데이터의 평균 총 전력량
-        const allLogs = await collection.find({ houseId }).toArray();
-        const totalWattageSum = allLogs.reduce((sum, log) => sum + log.totalWattage, 0);
-        const totalWattageAvg = allLogs.length ? totalWattageSum / allLogs.length : 0;
+        const monthlyTotals = await collection.aggregate([
+            // 1. date 필드에서 연도와 월을 추출
+            {
+                $project: {
+                    yearMonth: { $substr: ["$date", 0, 7] }, // "2024-10" 형태로 연도와 월 추출
+                    totalWattage: 1,
+                },
+            },
+            // 2. 연도-월별로 그룹화하여 총 전력량 합계 계산
+            {
+                $group: {
+                    _id: "$yearMonth", // 연도-월로 그룹화
+                    totalWattageSum: { $sum: "$totalWattage" }, // 총 전력량 합계
+                },
+            },
+        ]).toArray();
+
+        // 월별 총 전력량 합계를 구한 후 평균 계산
+const totalSum = monthlyTotals.reduce((sum, record) => sum + record.totalWattageSum, 0);
+const averageMonthlyWattage = monthlyTotals.length ? totalSum / monthlyTotals.length : 0;
+
+// 평균 월 전력량 출력
+console.log(`평균 월 전력량: ${averageMonthlyWattage}`);
 
         // 응답 데이터 작성
         const responseData = {
             weeklyData,
             monthlyTotalWattage,
             lastMonthTotalWattage,
-            totalWattageAvg
+            averageMonthlyWattage
         };
+        console.error("통계 데이터 계산 오류:", responseData);
 
         res.status(200).json(responseData);
     } catch (error) {
