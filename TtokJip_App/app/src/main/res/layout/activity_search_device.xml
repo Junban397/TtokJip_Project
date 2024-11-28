@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SearchDevice"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.SearchDevice">
 
     <TextView
         android:layout_width="wrap_content"
@@ -21,18 +21,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="탐색된 기기"
-        android:gravity="bottom|center"
-        android:textSize="22sp"
         android:fontFamily="@font/a1009_1"
+        android:gravity="bottom|center"
+        android:text="탐색된 기기"
         android:textColor="@color/black"
-        />
+        android:textSize="22sp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="28dp"
         android:id="@+id/search_device_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="28dp" />
 
 
 </LinearLayout>

@@ -9,6 +9,7 @@
 #define LED_PIN2 8          // LED가 연결된 핀 (D9)
 #define LED_PIN3 9
 #define LED_PIN4 10
+#define LED_PIN5 11
 
 #define ACS712_PIN A3         // ACS712 전류 센서가 연결된 핀
 #define VOLTAGE_REF 5.0       // 아두이노의 참조 전압 (5V)
@@ -41,11 +42,13 @@ void setup()
   pinMode(LED_PIN2, OUTPUT);
   pinMode(LED_PIN3, OUTPUT);
   pinMode(LED_PIN4, OUTPUT);
+  pinMode(LED_PIN5, OUTPUT);
 
   digitalWrite(LED_PIN1, HIGH);     // 초기 LED 상태를 ON로 설정
   digitalWrite(LED_PIN2, HIGH);
   digitalWrite(LED_PIN3, HIGH);
   digitalWrite(LED_PIN4, HIGH);
+  digitalWrite(LED_PIN5, HIGH);
 }
 
 void loop()
@@ -66,6 +69,8 @@ void loop()
     String command = bleSerial.readStringUntil('\n'); // 블루투스에서 받은 명령 읽기
     Serial.println(command);
     handleCommand(command); // 명령 처리
+    
+
   }
 
     // 전류 측정 및 전력 계산
@@ -145,10 +150,12 @@ void sendData()
     data += "<PIR:off>";
   }
   data += "<Power:" + String(power) + ">";  // 전력 (와트) 추가
+  data += "<PIR_PIN,LED_PIN1,LED_PIN2,LED_PIN3,LED_PIN4,LED_PIN5>";
   
   bleSerial.print(data);
   bleSerial.println();  // 데이터 끝에 줄 바꿈 추가
 }
+
 
 void handleCommand(String command)
 {
@@ -207,6 +214,8 @@ void handleLEDCommand(String ledName, String ledState)
       digitalWrite(LED_PIN3, HIGH);  // LED3 켜기
     } else if (ledName == "LED4") {
       digitalWrite(LED_PIN4, HIGH);  // LED4 켜기
+    }else if (ledName == "LED5") {
+      digitalWrite(LED_PIN5, HIGH);  // LED4 켜기
     }
   } else if (ledState == "false") {
     if (ledName == "LED1") {
@@ -217,6 +226,8 @@ void handleLEDCommand(String ledName, String ledState)
       digitalWrite(LED_PIN3, LOW);   // LED3 끄기
     } else if (ledName == "LED4") {
       digitalWrite(LED_PIN4, LOW);   // LED4 끄기
+    }else if (ledName == "LED5") {
+      digitalWrite(LED_PIN5, LOW);  // LED4 끄기
     }
   }
 }

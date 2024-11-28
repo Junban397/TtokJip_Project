@@ -1,5 +1,6 @@
 package com.example.ttokjip.network
 
+import com.example.ttokjip.data.AddDevice
 import com.example.ttokjip.data.Device
 import com.example.ttokjip.data.GetLogDate
 import com.example.ttokjip.data.IsFavoriteRequest
@@ -66,4 +67,9 @@ interface ApiService {
         @Query("date") logDate:String,
         @Header("Authorization") token: String
     ): Response<StatisticsResponse>
+    @POST("/devices/addDevice")
+    suspend fun addDevice(
+        @Body addDeviceInfo: AddDevice,
+        @Header("Authorization") token: String
+    ): Response<ResponseBody>
 }

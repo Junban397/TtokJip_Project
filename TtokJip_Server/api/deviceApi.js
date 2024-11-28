@@ -25,6 +25,53 @@ const getDevices = async (req, res) => {
         await client.close();
     }
 };
+const addDevice = async (req, res) => {
+    const { houseId } = req.user;  // 요청자의 houseId를 사용
+    const { deviceId, sensorName, deviceName, deviceType, deviceLocation, deviceStatus, isFavorite } = req.body;
+
+    // 필수 데이터 검증
+    if (!deviceId || !deviceType || !deviceName || !deviceLocation) {
+        return res.status(400).json({ message: '필수 필드가 누락되었습니다.' });
+    }
+
+    try {
+        await client.connect();
+        const database = client.db('ttokjip');
+        const collection = database.collection('devices');
+
+        // 중복 확인: 동일한 houseId와 deviceId가 있는지 체크
+        const existingDevice = await collection.findOne({sensorName});
+        if (existingDevice) {
+            return res.status(409).json({ message: '이미 존재하는 디바이스입니다.' });
+        }
+
+        // 새 디바이스 데이터 생성
+        const newDevice = {
+            houseId,
+            deviceId,
+            deviceType,
+            sensorName,
+            deviceName,
+            deviceLocation,
+            deviceStatus: deviceStatus || false, // 기본값 false
+            isFavorite: isFavorite || false     // 기본값 false
+        };
+
+        // MongoDB에 데이터 삽입
+        const result = await collection.insertOne(newDevice);
+
+        if (result.acknowledged) {
+            res.status(201).json({ message: '디바이스가 성공적으로 추가되었습니다.', device: newDevice });
+        } else {
+            res.status(500).json({ message: '디바이스 추가에 실패했습니다.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: '서버 오류' });
+    } finally {
+        await client.close();
+    }
+};
 
 const updateDeviceStatus = async (req, res) => {
     const { deviceId, status } = req.body;
@@ -57,7 +104,7 @@ const updateDeviceStatus = async (req, res) => {
     }
 };
 const updateDeviceFavorite = async (req, res) => {
-    const { deviceId, isFavorite } = req.body; 
+    const { deviceId, isFavorite } = req.body;
 
     // deviceId가 없으면 400 에러 처리
     if (!deviceId) {
@@ -70,7 +117,7 @@ const updateDeviceFavorite = async (req, res) => {
         const collection = database.collection('devices');
 
         const result = await collection.updateOne(
-            { deviceId: deviceId}, 
+            { deviceId: deviceId },
             { $set: { isFavorite: isFavorite } }
         );
 
@@ -132,15 +179,15 @@ const modeSetting = async (req, res) => {
     }
 };
 
-const modeSettingDeviceSwitch=async(req,res)=>{
-    const {houseId, deviceId, mode, newStatus } = req.body;
-    try{
+const modeSettingDeviceSwitch = async (req, res) => {
+    const { houseId, deviceId, mode, newStatus } = req.body;
+    try {
         await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('mode');
 
         const result = await collection.updateOne(
-            { houseId:houseId, mode:mode, "devices.deviceId": deviceId },  
+            { houseId: houseId, mode: mode, "devices.deviceId": deviceId },
             { $set: { "devices.$.status": newStatus } }
         );
 
@@ -150,7 +197,7 @@ const modeSettingDeviceSwitch=async(req,res)=>{
             res.status(404).json({ message: '디바이스를 찾을 수 없습니다.' });
         }
 
-    }catch (error) {
+    } catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 오류' });
     } finally {
@@ -175,8 +222,8 @@ const modeSettingAllDeviceSwitch = async (req, res) => {
             return res.status(404).json({ message: '해당 모드 데이터가 없습니다.' });
         }
 
-        const bulkDeviceStatus=modeData.devices.map(modeDevice =>({
-            updateOne:{
+        const bulkDeviceStatus = modeData.devices.map(modeDevice => ({
+            updateOne: {
                 filter: { houseId: houseId, deviceId: modeDevice.deviceId }, // houseId와 deviceId로 필터링
                 update: { $set: { deviceStatus: modeDevice.status } }         // mode의 상태로 업데이트
             }
@@ -200,8 +247,9 @@ const modeSettingAllDeviceSwitch = async (req, res) => {
 };
 
 
-module.exports = { 
+module.exports = {
     getDevices,
+    addDevice,
     updateDeviceStatus,
     updateDeviceFavorite,
     modeSetting,

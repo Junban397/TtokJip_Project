@@ -3,6 +3,7 @@ package com.example.ttokjip.ui
 import GridSpacingItemDecoration
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -53,6 +54,10 @@ class DeviceManagerView : BaseDeviceManger() {
         }
 
         setupRecyclerView(token!!)
+        binding.addDeviceBtn.setOnClickListener {
+            val intent = Intent(requireContext(), SearchDevice::class.java)
+            startActivity(intent)
+        }
 
         // 기본 필터 설정 및 위치 버튼 추가
         return binding.root

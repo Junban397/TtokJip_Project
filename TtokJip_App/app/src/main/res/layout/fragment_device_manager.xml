@@ -44,6 +44,15 @@
             android:id="@+id/filter_device_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/add_device_btn"
+            android:background="@drawable/rounded_border"
+            android:text="신규기기 등록"
+            android:fontFamily="@font/a1009_2"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            />
 
 
     </LinearLayout>

@@ -20,6 +20,15 @@ data class Device(
         }
     }
 }
+data class AddDevice(
+    val deviceId: String,
+    var sensorName:String,
+    var deviceName: String,
+    var deviceType: String,
+    var deviceLocation: String,
+    var deviceStatus:Boolean,
+    var isFavorite: Boolean
+)
 data class StatusRequest(
     val deviceId: String,
     val status: Boolean

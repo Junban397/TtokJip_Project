@@ -4,6 +4,7 @@
     android:layout_height="68dp">
 
     <TextView
+        android:id="@+id/device_name_search"
         android:gravity="center|left"
         android:textSize="22dp"
         android:textColor="@color/black"
