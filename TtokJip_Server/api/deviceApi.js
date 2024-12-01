@@ -26,10 +26,9 @@ const getDevices = async (req, res) => {
     }
 };
 const addDevice = async (req, res) => {
-    const { houseId } = req.user;  // 요청자의 houseId를 사용
+    const { houseId } = req.user;
     const { deviceId, sensorName, deviceName, deviceType, deviceLocation, deviceStatus, isFavorite } = req.body;
 
-    // 필수 데이터 검증
     if (!deviceId || !deviceType || !deviceName || !deviceLocation) {
         return res.status(400).json({ message: '필수 필드가 누락되었습니다.' });
     }
@@ -38,14 +37,13 @@ const addDevice = async (req, res) => {
         await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('devices');
+        const modesCollection = database.collection('mode');
 
-        // 중복 확인: 동일한 houseId와 deviceId가 있는지 체크
-        const existingDevice = await collection.findOne({sensorName});
+        const existingDevice = await collection.findOne({ sensorName });
         if (existingDevice) {
             return res.status(409).json({ message: '이미 존재하는 디바이스입니다.' });
         }
 
-        // 새 디바이스 데이터 생성
         const newDevice = {
             houseId,
             deviceId,
@@ -53,16 +51,15 @@ const addDevice = async (req, res) => {
             sensorName,
             deviceName,
             deviceLocation,
-            deviceStatus: deviceStatus || false, // 기본값 false
-            isFavorite: isFavorite || false     // 기본값 false
+            deviceStatus: deviceStatus || false,
+            isFavorite: isFavorite || false
         };
 
-        // MongoDB에 데이터 삽입
         const result = await collection.insertOne(newDevice);
-        if (deviceInsertResult.acknowledged) {
-            // `modes` 컬렉션에서 해당 `houseId`와 관련된 모든 모드의 `devices` 배열에 새로운 디바이스 추가
+        if (result.acknowledged) {
+            console.log("Updating modes for houseId:", houseId);
             const modeUpdateResult = await modesCollection.updateMany(
-                { houseId }, // 해당 houseId 조건
+                { houseId },
                 {
                     $push: {
                         devices: {
@@ -73,16 +70,16 @@ const addDevice = async (req, res) => {
                 }
             );
 
-            if (modeUpdateResult.matchedCount > 0) {
+            console.log("Mode update result:", modeUpdateResult);
+
+            if (modeUpdateResult.matchedCount > 0 || modeUpdateResult.upsertedCount > 0) {
                 res.status(201).json({
                     message: '디바이스가 성공적으로 추가되었습니다.',
                     device: newDevice,
                     modesUpdated: modeUpdateResult.modifiedCount
                 });
             } else {
-                res.status(500).json({
-                    message: '디바이스는 추가되었지만 modes 업데이트에 실패했습니다.'
-                });
+                res.status(500).json({ message: '디바이스는 추가되었지만 modes 업데이트에 실패했습니다.' });
             }
         } else {
             res.status(500).json({ message: '디바이스 추가에 실패했습니다.' });
