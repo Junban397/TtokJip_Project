@@ -59,9 +59,31 @@ const addDevice = async (req, res) => {
 
         // MongoDB에 데이터 삽입
         const result = await collection.insertOne(newDevice);
+        if (deviceInsertResult.acknowledged) {
+            // `modes` 컬렉션에서 해당 `houseId`와 관련된 모든 모드의 `devices` 배열에 새로운 디바이스 추가
+            const modeUpdateResult = await modesCollection.updateMany(
+                { houseId }, // 해당 houseId 조건
+                {
+                    $push: {
+                        devices: {
+                            deviceId: newDevice.deviceId,
+                            status: newDevice.deviceStatus
+                        }
+                    }
+                }
+            );
 
-        if (result.acknowledged) {
-            res.status(201).json({ message: '디바이스가 성공적으로 추가되었습니다.', device: newDevice });
+            if (modeUpdateResult.matchedCount > 0) {
+                res.status(201).json({
+                    message: '디바이스가 성공적으로 추가되었습니다.',
+                    device: newDevice,
+                    modesUpdated: modeUpdateResult.modifiedCount
+                });
+            } else {
+                res.status(500).json({
+                    message: '디바이스는 추가되었지만 modes 업데이트에 실패했습니다.'
+                });
+            }
         } else {
             res.status(500).json({ message: '디바이스 추가에 실패했습니다.' });
         }
