@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -47,14 +48,19 @@ class MainView : BaseDeviceManger() {
     private var temperature: Float = 0.0f
     private var humidity: Float = 0.0f
     private var token: String = ""
+    private val sensorDataHandler = Handler(Looper.getMainLooper())
+    private val airQualityHandler = Handler(Looper.getMainLooper())
 
-    // Handler와 Runnable을 정의
-    private val handler = Handler(Looper.getMainLooper())
-    private val runnable = object : Runnable {
+    private val sensorDataRunnable = object : Runnable {
         override fun run() {
-            // 10초마다 실행될 코드
-            handler.postDelayed(this, 10000) // 10초마다 실행되도록 설정
-            uploadSensorDataToServer() // 서버로 데이터 업로드
+            uploadSensorDataToServer() // 10초마다 실행
+            sensorDataHandler.postDelayed(this, 10000) // 다음 실행 예약
+        }
+    }
+    private val airQualityRunnable = object : Runnable {
+        override fun run() {
+            updateAirQualityStatus() // 3초마다 실행
+            airQualityHandler.postDelayed(this, 3000) // 다음 실행 예약
         }
     }
 
@@ -105,17 +111,18 @@ class MainView : BaseDeviceManger() {
 
         return binding.root
     }
+
     override fun onStart() {
         super.onStart()
-        // 10초마다 uploadSensorDataToServer 호출
-        handler.post(runnable)
+        sensorDataHandler.post(sensorDataRunnable) // 센서 데이터 업로드 시작
+        airQualityHandler.post(airQualityRunnable)
     }
 
     // onStop에서 반복 작업을 멈춤
     override fun onStop() {
         super.onStop()
-        // 반복 작업 멈추기
-        handler.removeCallbacks(runnable)
+        sensorDataHandler.removeCallbacks(sensorDataRunnable) // 센서 데이터 반복 작업 멈춤
+        airQualityHandler.removeCallbacks(airQualityRunnable) // 공기 질 업데이트 반복 작업 멈춤
     }
 
     /**
@@ -321,6 +328,47 @@ class MainView : BaseDeviceManger() {
         // 현재 날짜를 String으로 변환하는 로직
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return sdf.format(Date())
+    }
+
+    private fun updateAirQualityStatus() {
+        //18~26
+        //40~70
+        binding.airQualityStatus.text = when {
+            // 좋음 조건
+            temperature in 18f..26f && humidity in 40f..60f && binding.dustStatus.text.toString() == "좋음" -> {
+                binding.airQualityStatus.setTextColor(Color.parseColor("#80ed99"))
+                "좋음"
+            }
+
+            // 보통 조건
+            (temperature in 15f..17f || temperature in 27f..30f) &&
+                    (humidity in 35f..39f || humidity in 61f..65f) &&
+                    binding.dustStatus.text.toString() == "보통" -> {
+                binding.airQualityStatus.setTextColor(Color.parseColor("#FFE500"))
+                "보통"
+            }
+
+            // 나쁨 조건
+            else -> {
+                binding.airQualityStatus.setTextColor(Color.parseColor("#FF0000"))
+                "나쁨"
+            }
+        }
+        val airQualityColor = when {
+            // 좋음 조건
+            temperature in 18f..26f && humidity in 40f..60f && binding.dustStatus.text.toString() == "좋음" -> R.drawable.circle_good
+
+            // 보통 조건
+            (temperature in 15f..17f || temperature in 27f..30f) &&
+                    (humidity in 35f..39f || humidity in 61f..65f) &&
+                    binding.dustStatus.text.toString() == "보통" -> R.drawable.circle_normal
+
+            // 나쁨 조건
+            else -> R.drawable.circle_bad
+        }
+        binding.airQualityStatusColor.background =
+            ContextCompat.getDrawable(requireContext(), airQualityColor)
+
     }
 
     override fun onDestroyView() {

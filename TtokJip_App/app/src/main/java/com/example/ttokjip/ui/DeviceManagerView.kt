@@ -56,6 +56,7 @@ class DeviceManagerView : BaseDeviceManger() {
         setupRecyclerView(token!!)
         binding.addDeviceBtn.setOnClickListener {
             val intent = Intent(requireContext(), SearchDevice::class.java)
+            intent.putExtra("TOKEN", token)
             startActivity(intent)
         }
 
@@ -215,5 +216,21 @@ class DeviceManagerView : BaseDeviceManger() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    override fun onResume() {
+        super.onResume()
+        val sharedPreferences = requireContext().getSharedPreferences("userPreferences", Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("token", null)
+
+        // 토큰이 null이 아니면 디바이스 목록을 다시 가져오기
+        if (token != null) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    deviceViewModel.fetchDevices(token)
+                } catch (e: Exception) {
+                    // 에러 처리
+                }
+            }
+        }
     }
 }

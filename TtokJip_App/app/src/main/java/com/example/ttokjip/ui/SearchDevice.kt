@@ -1,21 +1,29 @@
 package com.example.ttokjip.ui
 
 import BluetoothManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ttokjip.R
 import com.example.ttokjip.adapter.SearchDeviceAdapter
 import com.example.ttokjip.databinding.ActivityCenterViewBinding
 import com.example.ttokjip.databinding.ActivitySearchDeviceBinding
+import com.example.ttokjip.viewmodel.DeviceViewModel
+import kotlinx.coroutines.launch
 
 class SearchDevice : AppCompatActivity() {
+    private lateinit var token: String
+    private lateinit var deviceViewModel: DeviceViewModel
     private val buffer = StringBuilder()
     private lateinit var binding: ActivitySearchDeviceBinding
     private val searchDeviceList = mutableListOf<String>(
@@ -26,6 +34,8 @@ class SearchDevice : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchDeviceBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        token = intent.getStringExtra("TOKEN") ?: ""
+        deviceViewModel = ViewModelProvider(this).get(DeviceViewModel::class.java)
 
         searchDeviceAdapter = SearchDeviceAdapter(searchDeviceList) { deviceName ->
             showDeviceDialog(deviceName) // 아이템 클릭 시 다이얼로그 표시
@@ -79,10 +89,15 @@ class SearchDevice : AppCompatActivity() {
         }
     }
 
-
     // 다이얼로그를 보여주는 함수
     private fun showDeviceDialog(deviceName: String) {
         val dialog = AddDeviceDialog(deviceName)
+        Log.d("SearchDeviceABDFEFG", "Dialog dismissed, calling fetchDevices")
+        dialog.onDismissListener = {
+            lifecycleScope.launch {
+                deviceViewModel.fetchDevices(token)
+            }
+        }
         dialog.show(supportFragmentManager, "CustomDialog")
     }
 }

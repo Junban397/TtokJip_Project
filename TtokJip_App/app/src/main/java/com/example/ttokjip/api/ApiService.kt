@@ -13,6 +13,7 @@ import com.example.ttokjip.data.UpdateModeRequest
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -70,6 +71,12 @@ interface ApiService {
     @POST("/devices/addDevice")
     suspend fun addDevice(
         @Body addDeviceInfo: AddDevice,
+        @Header("Authorization") token: String
+    ): Response<ResponseBody>
+
+    @DELETE("/devices/deleteDevice/{deviceId}")
+    suspend fun deleteDevice(
+        @Path("deviceId") deviceId: String,
         @Header("Authorization") token: String
     ): Response<ResponseBody>
 }
