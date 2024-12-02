@@ -92,6 +92,44 @@ const addDevice = async (req, res) => {
     }
 };
 
+const deleteDevice = async (req, res) => {
+    const { houseId } = req.user;
+    const { deviceId} = req.params;
+    if (!deviceId) {
+        return res.status(400).json({ message: 'deviceId가 제공되지 않았습니다.' });
+    }
+
+    try {
+        await client.connect();
+        const database = client.db('ttokjip');
+        const collection = database.collection('devices');
+        const modesCollection = database.collection('mode');
+
+        const deviceDeleteResult = await collection.deleteOne({ houseId, deviceId })
+
+        if (deviceDeleteResult.deletedCount > 0) {
+            const modeUpdateResult = await modesCollection.updateMany(
+                { houseId },
+                {
+                    $pull: { devices: { deviceId } }
+                }
+            );
+
+            res.status(200).json({
+                message: '디바이스가 성공적으로 삭제되었습니다.',
+                modesUpdated: modeUpdateResult.modifiedCount
+            });
+        } else {
+            res.status(404).json({ message: '삭제할 디바이스를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('Error deleting device:', error);
+        res.status(500).json({ message: '서버 오류로 인해 디바이스를 삭제하지 못했습니다.' });
+    } finally {
+        await client.close();
+    }
+};
+
 const updateDeviceStatus = async (req, res) => {
     const { deviceId, status } = req.body;
 
@@ -273,5 +311,6 @@ module.exports = {
     updateDeviceFavorite,
     modeSetting,
     modeSettingDeviceSwitch,
-    modeSettingAllDeviceSwitch
+    modeSettingAllDeviceSwitch,
+    deleteDevice
 };

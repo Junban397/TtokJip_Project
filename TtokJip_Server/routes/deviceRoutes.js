@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/authMiddleware');
-const { getDevices, addDevice, updateDeviceStatus, updateDeviceFavorite, modeSetting, modeSettingDeviceSwitch, modeSettingAllDeviceSwitch } = require('../api/deviceApi');
+const { getDevices, addDevice, updateDeviceStatus, updateDeviceFavorite, modeSetting, modeSettingDeviceSwitch, modeSettingAllDeviceSwitch,deleteDevice } = require('../api/deviceApi');
 
 // 디바이스 정보를 가져오는 API
 router.get('/', authenticateToken, getDevices);
@@ -24,5 +24,7 @@ router.put('/updateModeDevice', authenticateToken, modeSettingAllDeviceSwitch);
 // 디바이스를 추가하는 API
 router.post('/addDevice', authenticateToken, addDevice);
 
+// 디바이스를 삭제하는 API
+router.delete('/deleteDevice/:deviceId',authenticateToken, deleteDevice)
 
 module.exports = router;

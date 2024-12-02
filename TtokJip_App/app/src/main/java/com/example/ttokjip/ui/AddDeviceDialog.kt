@@ -2,6 +2,7 @@ package com.example.ttokjip.ui
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -31,10 +32,10 @@ class AddDeviceDialog(private val deviceName: String) : DialogFragment() {
     private var _binding: DialogAddDeviceBinding? = null
     private val binding get() = _binding!!
     private var token: String = ""
+    var onDismissListener: (() -> Unit)? = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
-
-
         return dialog
     }
 
@@ -109,6 +110,11 @@ class AddDeviceDialog(private val deviceName: String) : DialogFragment() {
 
             }
         }
+    }
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        // 다이얼로그가 닫힐 때 호출할 메서드 실행
+        onDismissListener?.invoke()
     }
 
     override fun onDestroyView() {

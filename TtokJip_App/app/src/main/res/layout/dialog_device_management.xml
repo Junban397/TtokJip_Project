@@ -103,6 +103,7 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/delete_btn_info"
             android:textColor="@color/white"
             android:layout_width="60dp"
             android:layout_height="30dp"
