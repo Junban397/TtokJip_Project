@@ -48,7 +48,7 @@ void setup()
   digitalWrite(LED_PIN2, HIGH);
   digitalWrite(LED_PIN3, HIGH);
   digitalWrite(LED_PIN4, HIGH);
-  digitalWrite(LED_PIN5, HIGH);
+  digitalWrite(LED_PIN5, LOW);
 }
 
 void loop()
@@ -170,6 +170,7 @@ void handleCommand(String command)
       command = command.substring(spaceIndex + 1);  // 나머지 부분 처리
     } else {
       deviceCommand = command;  // 마지막 명령 처리
+      command = ""; // 마지막 명령어 처리 후 종료
     }
     
     // 명령어 형식 처리
@@ -214,7 +215,7 @@ void handleLEDCommand(String ledName, String ledState)
       digitalWrite(LED_PIN3, HIGH);  // LED3 켜기
     } else if (ledName == "LED4") {
       digitalWrite(LED_PIN4, HIGH);  // LED4 켜기
-    }else if (ledName == "LED5") {
+    } else if (ledName == "LED5") {
       digitalWrite(LED_PIN5, HIGH);  // LED4 켜기
     }
   } else if (ledState == "false") {
@@ -226,7 +227,7 @@ void handleLEDCommand(String ledName, String ledState)
       digitalWrite(LED_PIN3, LOW);   // LED3 끄기
     } else if (ledName == "LED4") {
       digitalWrite(LED_PIN4, LOW);   // LED4 끄기
-    }else if (ledName == "LED5") {
+    } else if (ledName == "LED5") {
       digitalWrite(LED_PIN5, LOW);  // LED4 끄기
     }
   }

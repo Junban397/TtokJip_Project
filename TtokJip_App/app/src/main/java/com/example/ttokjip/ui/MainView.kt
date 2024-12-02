@@ -114,7 +114,7 @@ class MainView : BaseDeviceManger() {
 
     override fun onStart() {
         super.onStart()
-        sensorDataHandler.post(sensorDataRunnable) // 센서 데이터 업로드 시작
+        sensorDataHandler.postDelayed(sensorDataRunnable, 10000) // 센서 데이터 업로드 시작
         airQualityHandler.post(airQualityRunnable)
     }
 
@@ -335,14 +335,13 @@ class MainView : BaseDeviceManger() {
         //40~70
         binding.airQualityStatus.text = when {
             // 좋음 조건
-            temperature in 18f..26f && humidity in 40f..60f && binding.dustStatus.text.toString() == "좋음" -> {
+            temperature in 18f..26f && humidity in 30f..60f && binding.dustStatus.text.toString() == "좋음" -> {
                 binding.airQualityStatus.setTextColor(Color.parseColor("#80ed99"))
                 "좋음"
             }
-
             // 보통 조건
             (temperature in 15f..17f || temperature in 27f..30f) &&
-                    (humidity in 35f..39f || humidity in 61f..65f) &&
+                    (humidity in 20f..29f || humidity in 61f..65f) &&
                     binding.dustStatus.text.toString() == "보통" -> {
                 binding.airQualityStatus.setTextColor(Color.parseColor("#FFE500"))
                 "보통"
@@ -356,11 +355,11 @@ class MainView : BaseDeviceManger() {
         }
         val airQualityColor = when {
             // 좋음 조건
-            temperature in 18f..26f && humidity in 40f..60f && binding.dustStatus.text.toString() == "좋음" -> R.drawable.circle_good
+            temperature in 18f..26f && humidity in 30f..60f && binding.dustStatus.text.toString() == "좋음" -> R.drawable.circle_good
 
             // 보통 조건
             (temperature in 15f..17f || temperature in 27f..30f) &&
-                    (humidity in 35f..39f || humidity in 61f..65f) &&
+                    (humidity in 20f..29f || humidity in 61f..65f) &&
                     binding.dustStatus.text.toString() == "보통" -> R.drawable.circle_normal
 
             // 나쁨 조건

@@ -74,22 +74,9 @@ class CenterView : AppCompatActivity() {
                 else -> false
             }
         }
-
-        // 로그아웃 버튼 클릭 시
-        binding.logout.setOnClickListener {
-            logout()
-        }
     }
 
-    /** 로그아웃 처리
-     * SharedPreferences에서 로그인 정보를 삭제하고, 로그인 화면으로 이동합니다.
-     */
-    private fun logout() {
-        val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.apply()
-        navigateToLogin()
-    }
+
 
     /** 로그인 화면으로 이동
      * 로그인 화면(LoginMain)으로 이동하고 현재 화면을 종료합니다.

@@ -74,7 +74,7 @@ class StatisticsView : BaseDeviceManger() {
     override fun onStart() {
         super.onStart()
         // 10초마다 uploadSensorDataToServer 호출
-        handler.post(runnable)
+        handler.postDelayed(runnable,10000)
     }
 
     // onStop에서 반복 작업을 멈춤
