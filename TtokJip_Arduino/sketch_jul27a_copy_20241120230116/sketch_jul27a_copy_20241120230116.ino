@@ -77,13 +77,7 @@ void loop()
   readCurrent();  // 전류 값 읽기
   calculatePower();  // 전력 계산
 
-  // 전력 값 시리얼 모니터에 출력
-  Serial.print("Current: ");
-  Serial.print(current);
-  Serial.print(" A\t");
-  Serial.print("Power: ");
-  Serial.print(power);
-  Serial.println(" W");
+
 }
 void readCurrent()
 {

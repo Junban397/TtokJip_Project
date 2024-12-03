@@ -68,7 +68,6 @@ class ModeSettingDialog() : DialogFragment() {
 
         binding.modeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.modeRecyclerView.adapter = modeSettingAdapter
-
         binding.outingBtn.setOnClickListener { modeClick("outing") }
         binding.homecomingBtn.setOnClickListener { modeClick("homecoming") }
         binding.sleepingBtn.setOnClickListener { modeClick("sleeping") }
@@ -77,6 +76,9 @@ class ModeSettingDialog() : DialogFragment() {
 
         deviceViewModel = ViewModelProvider(this).get(DeviceViewModel::class.java)
         observeModeSettings()
+        binding.checkBtn.setOnClickListener {
+            dismiss()
+        }
 
     }
 

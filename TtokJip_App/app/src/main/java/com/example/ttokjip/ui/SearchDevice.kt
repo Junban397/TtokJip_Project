@@ -19,6 +19,7 @@ import com.example.ttokjip.adapter.SearchDeviceAdapter
 import com.example.ttokjip.databinding.ActivityCenterViewBinding
 import com.example.ttokjip.databinding.ActivitySearchDeviceBinding
 import com.example.ttokjip.viewmodel.DeviceViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchDevice : AppCompatActivity() {
@@ -26,6 +27,7 @@ class SearchDevice : AppCompatActivity() {
     private lateinit var deviceViewModel: DeviceViewModel
     private val buffer = StringBuilder()
     private lateinit var binding: ActivitySearchDeviceBinding
+    private lateinit var loadingDialog: LoadingDialog
     private val searchDeviceList = mutableListOf<String>(
         "PIR", "LED1", "LED2", "LED3", "LED4", "LED5"
     )
@@ -37,13 +39,32 @@ class SearchDevice : AppCompatActivity() {
         token = intent.getStringExtra("TOKEN") ?: ""
         deviceViewModel = ViewModelProvider(this).get(DeviceViewModel::class.java)
 
+        loadingDialog = LoadingDialog(this)
+
+        // 로딩창 띄우기
+        showLoading()
+
+        // 3초 후 로딩창 닫기
+        lifecycleScope.launch {
+            delay(3000) // 3초 대기
+            hideLoading()
+        }
+
         searchDeviceAdapter = SearchDeviceAdapter(searchDeviceList) { deviceName ->
             showDeviceDialog(deviceName) // 아이템 클릭 시 다이얼로그 표시
         }
+
+
+    }
+    private fun showLoading() {
+        loadingDialog.show()
+    }
+
+    private fun hideLoading() {
+        loadingDialog.dismiss()
         binding.searchDeviceRecycler.layoutManager = LinearLayoutManager(this)
         binding.searchDeviceRecycler.adapter = searchDeviceAdapter
         searchDevice()
-
     }
 
     private fun searchDevice() {
@@ -51,7 +72,6 @@ class SearchDevice : AppCompatActivity() {
             BluetoothManager.sendData("searchDevice\n")
             redingDevice()
         } else {
-            Toast.makeText(this, "검색된 기기가 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 

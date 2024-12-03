@@ -31,6 +31,7 @@ import com.example.ttokjip.data.UpdateModeRequest
 import com.example.ttokjip.databinding.FragmentMainViewBinding
 import com.example.ttokjip.network.RetrofitClient
 import com.example.ttokjip.network.RetrofitClient.apiService
+import com.example.ttokjip.utils.Notification
 import com.example.ttokjip.viewmodel.DeviceViewModel
 import com.example.ttokjip.viewmodel.FilterType
 import kotlinx.coroutines.launch
@@ -43,6 +44,7 @@ class MainView : BaseDeviceManger() {
     private var _binding: FragmentMainViewBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var Notification: Notification
     private lateinit var bluetoothManager: BluetoothManager
     private var totalWattage: Float = 0.0f
     private var temperature: Float = 0.0f
@@ -50,6 +52,9 @@ class MainView : BaseDeviceManger() {
     private var token: String = ""
     private val sensorDataHandler = Handler(Looper.getMainLooper())
     private val airQualityHandler = Handler(Looper.getMainLooper())
+    private var lastMq2AlertTime: Long = 0  // MQ2 알림을 보낸 시간
+    private var lastPirAlertTime: Long = 0  // PIR 알림을 보낸 시간
+    private val ALERT_COOLDOWN_TIME = 30 * 60 * 1000L  // 30분 (밀리초 단위)
 
     private val sensorDataRunnable = object : Runnable {
         override fun run() {
@@ -60,7 +65,8 @@ class MainView : BaseDeviceManger() {
     private val airQualityRunnable = object : Runnable {
         override fun run() {
             updateAirQualityStatus() // 3초마다 실행
-            airQualityHandler.postDelayed(this, 3000) // 다음 실행 예약
+            centerSafety()
+            airQualityHandler.postDelayed(this, 1000) // 다음 실행 예약
         }
     }
 
@@ -69,7 +75,7 @@ class MainView : BaseDeviceManger() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainViewBinding.inflate(inflater, container, false)
-
+        Notification = Notification(requireContext())
         setupViewModel()
         bluetoothManager = BluetoothManager // BluetoothManager를 인스턴스화
 
@@ -248,21 +254,32 @@ class MainView : BaseDeviceManger() {
         binding.sensorFire.text = when (mq2Value) {
             in 0..100 -> {
                 binding.sensorFire.setTextColor(Color.GREEN)
-                "이상없음"
+                lastMq2AlertTime = 0
+                binding.dustStatus.text="좋음"
+                "이상 없음"
             }
 
             in 101..300 -> {
                 binding.sensorFire.setTextColor(Color.parseColor("#FFA500"))
+                lastMq2AlertTime = 0
+                binding.dustStatus.text="보통"
                 "주의"
             }
 
             in 301..1000 -> {
                 binding.sensorFire.setTextColor(Color.RED)
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastMq2AlertTime >= ALERT_COOLDOWN_TIME) {  // 30분 이상 경과했으면
+                    Notification.deliverNotification()
+                    lastMq2AlertTime = currentTime  // 알림 보낸 시간 기록
+                }
+                binding.dustStatus.text="나쁨"
                 "경고"
             }
 
             else -> {
                 binding.sensorFire.setTextColor(Color.RED)
+                binding.dustStatus.text="좋음"
                 "점검"
             }
         }
@@ -273,20 +290,26 @@ class MainView : BaseDeviceManger() {
         binding.sensorRip.text = when (pirStatus) {
             "detect" -> {
                 binding.sensorRip.setTextColor(Color.RED)
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastPirAlertTime >= ALERT_COOLDOWN_TIME) {  // 30분 이상 경과했으면
+                    Notification.deliverNotification()
+                    lastPirAlertTime = currentTime  // 알림 보낸 시간 기록
+                }
                 "움직임 감지"
             }
 
             "safety" -> {
                 binding.sensorRip.setTextColor(Color.GREEN)
+                lastPirAlertTime = 0
                 "이상 없음"
             }
 
             else -> {
                 binding.sensorRip.setTextColor(Color.BLACK)
+                lastPirAlertTime = 0
                 "OFF"
             }
         }
-
     }
 
     private fun processPowerMessage(message: String) {
@@ -368,6 +391,21 @@ class MainView : BaseDeviceManger() {
         binding.airQualityStatusColor.background =
             ContextCompat.getDrawable(requireContext(), airQualityColor)
 
+    }
+
+    private fun centerSafety() {
+        binding.safety.text = when {
+            (binding.sensorRip.text.toString() == "이상 없음" || binding.sensorRip.text.toString() == "OFF") &&
+                    (binding.sensorFire.text.toString() == "이상 없음" || binding.sensorFire.text.toString() == "점검") -> {
+                binding.safety.setTextColor(Color.parseColor("#80ed99"))
+                "안전"
+            }
+
+            else -> {
+                binding.safety.setTextColor(Color.parseColor("#FF0000"))
+                "경고"
+            }
+        }
     }
 
     override fun onDestroyView() {

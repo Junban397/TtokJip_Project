@@ -17,8 +17,13 @@ class SearchDeviceAdapter(
     }
 
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
+
+        val _deviceStatus = mutableListOf<String>(
+            "연결됨", "연결됨", "연결됨", "연결됨", "연결됨", "  "
+        )
         val deviceName = deviceList[position]
-        holder.bind(deviceName)
+        val deviceStatus = _deviceStatus[position]
+        holder.bind(deviceName,deviceStatus)
 
         holder.itemView.setOnClickListener {
             onDeviceClick(deviceName)
@@ -30,8 +35,10 @@ class SearchDeviceAdapter(
     // DeviceViewHolder 수정
     class DeviceViewHolder(private val binding: ItemSearchDeviceBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(deviceName: String) {
+        fun bind(deviceName: String,deviceStatus:String) {
+
             binding.deviceNameSearch.text = deviceName // 리사이클러뷰의 아이템에 데이터를 설정
+            binding.deviceConnectStatus.text=deviceStatus
         }
     }
 }

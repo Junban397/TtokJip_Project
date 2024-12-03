@@ -15,6 +15,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"/>
     <TextView
+        android:id="@+id/device_connect_status"
         android:gravity="center"
         android:text="연결됨"
         android:fontFamily="@font/a1009_1"
