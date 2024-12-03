@@ -10,6 +10,9 @@
     tools:context=".ui.DeviceManagement">
 
     <TextView
+        android:gravity="center"
+        android:fontFamily="@font/a1009_2"
+        android:textSize="28sp"
         android:id="@+id/search_device_name_dialog"
         android:layout_width="match_parent"
         android:layout_height="72dp"
@@ -40,7 +43,7 @@
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textColorHint="#9E9E9E"
-        android:inputType="text"
+        android:inputType="none"
         android:popupBackground="@color/white"/>
 
     <EditText

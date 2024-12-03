@@ -2,6 +2,7 @@ package com.example.ttokjip.login
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import com.android.volley.Request
@@ -12,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.ttokjip.BuildConfig.SERVER_URL
 import com.example.ttokjip.databinding.ActivityLoginMainBinding
 import com.example.ttokjip.ui.CenterView
@@ -26,6 +29,9 @@ class LoginMain : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // 권한 요청
+        requestNotificationPermission()
+
 
         // 이미 로그인된 사용자 확인 후 메인 화면으로 이동
         if (isUserLoggedIn()) {
@@ -129,5 +135,41 @@ class LoginMain : AppCompatActivity() {
     private fun navigateToCenterView() {
         startActivity(Intent(this@LoginMain, CenterView::class.java))
         finish()
+    }
+    // 권한 요청 함수
+    private fun requestNotificationPermission() {
+        // Android 13 이상에서만 알림 권한 요청
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    1 // 요청 코드
+                )
+            }
+        }
+    }
+
+    // 권한 요청 결과 처리
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 1) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 승인됨
+                Toast.makeText(this, "알림 권한이 승인되었습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                // 권한이 거부됨
+                Toast.makeText(this, "알림 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

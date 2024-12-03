@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +19,7 @@ class CenterView : AppCompatActivity() {
     private lateinit var binding: ActivityCenterViewBinding
     private lateinit var sharedPreferences: SharedPreferences
     private var bluetoothAdapter: BluetoothAdapter? = null
-    private var progressDialog: AlertDialog? = null  // 로딩 다이얼로그
+    private var progressDialog: LoadingDialog? = null  // 로딩 다이얼로그
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,8 +149,10 @@ class CenterView : AppCompatActivity() {
             if (isConnected) {
                 setFragmentView(MainView())  // MainView로 이동
             } else {
-                setFragmentView(MainView())  // MainView로 이동
-//                Toast.makeText(this, "블루투스 연결 실패", Toast.LENGTH_SHORT).show()
+                // 일정 시간 후에 다시 연결 시도
+                Handler(Looper.getMainLooper()).postDelayed({
+                    connectToBluetoothDevice(device)
+                }, 2000) // 2초 후 재시도
             }
         }
     }
@@ -160,15 +164,15 @@ class CenterView : AppCompatActivity() {
     }
     // 로딩 다이얼로그 표시
     private fun showLoadingDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("네트워크 연결중...")
-        builder.setCancelable(false)  // 클릭 불가
-        progressDialog = builder.create()
+        if (progressDialog == null) {
+            progressDialog = LoadingDialog(this)
+        }
         progressDialog?.show()
     }
 
     // 로딩 다이얼로그 숨기기
     private fun dismissLoadingDialog() {
         progressDialog?.dismiss()
+        progressDialog = null
     }
 }
