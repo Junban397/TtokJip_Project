@@ -1,13 +1,9 @@
-const { MongoClient } = require('mongodb');
-const { MONGODB_URI } = process.env;
-
-const client = new MongoClient(MONGODB_URI);
+const { client }= require('../connectionDb');
 
 const getDevices = async (req, res) => {
     const { houseId } = req.user;  // 요청자의 houseId를 사용
 
     try {
-        await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('devices');
 
@@ -21,9 +17,7 @@ const getDevices = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 오류' });
-    } finally {
-        await client.close();
-    }
+    } 
 };
 const addDevice = async (req, res) => {
     const { houseId } = req.user;
@@ -34,7 +28,6 @@ const addDevice = async (req, res) => {
     }
 
     try {
-        await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('devices');
         const modesCollection = database.collection('mode');
@@ -87,8 +80,6 @@ const addDevice = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 오류' });
-    } finally {
-        await client.close();
     }
 };
 
@@ -100,7 +91,6 @@ const deleteDevice = async (req, res) => {
     }
 
     try {
-        await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('devices');
         const modesCollection = database.collection('mode');
@@ -125,9 +115,7 @@ const deleteDevice = async (req, res) => {
     } catch (error) {
         console.error('Error deleting device:', error);
         res.status(500).json({ message: '서버 오류로 인해 디바이스를 삭제하지 못했습니다.' });
-    } finally {
-        await client.close();
-    }
+    } 
 };
 
 const updateDeviceStatus = async (req, res) => {
@@ -139,7 +127,6 @@ const updateDeviceStatus = async (req, res) => {
     }
 
     try {
-        await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('devices');
 
@@ -156,9 +143,7 @@ const updateDeviceStatus = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 오류' });
-    } finally {
-        await client.close();
-    }
+    } 
 };
 const updateDeviceFavorite = async (req, res) => {
     const { deviceId, isFavorite } = req.body;
@@ -169,7 +154,6 @@ const updateDeviceFavorite = async (req, res) => {
     }
 
     try {
-        await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('devices');
 
@@ -186,8 +170,6 @@ const updateDeviceFavorite = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 오류' });
-    } finally {
-        await client.close();
     }
 };
 
@@ -196,7 +178,6 @@ const modeSetting = async (req, res) => {
     const { mode } = req.query;
 
     try {
-        await client.connect();
         const database = client.db('ttokjip');
 
         // 1. houseId에 맞는 device 데이터 가져오기
@@ -231,15 +212,12 @@ const modeSetting = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 오류' });
-    } finally {
-        await client.close();
     }
 };
 
 const modeSettingDeviceSwitch = async (req, res) => {
     const { houseId, deviceId, mode, newStatus } = req.body;
     try {
-        await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('mode');
 
@@ -257,9 +235,7 @@ const modeSettingDeviceSwitch = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 오류' });
-    } finally {
-        await client.close();
-    }
+    } 
 };
 
 const modeSettingAllDeviceSwitch = async (req, res) => {
@@ -267,7 +243,6 @@ const modeSettingAllDeviceSwitch = async (req, res) => {
     const { mode } = req.body;
     console.log('Received request for mode:', mode);  // 추가된 로그
     try {
-        await client.connect();
         const database = client.db('ttokjip');
 
 
@@ -298,9 +273,7 @@ const modeSettingAllDeviceSwitch = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 오류' });
-    } finally {
-        await client.close();
-    }
+    } 
 };
 
 

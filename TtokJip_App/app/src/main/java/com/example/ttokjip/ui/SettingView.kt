@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import com.example.ttokjip.databinding.FragmentSettingViewBinding
@@ -27,6 +28,17 @@ class SettingView : Fragment() {
             editor.apply()
             navigateToLogin()
         }
+        binding.myInfoBtn.setOnClickListener {
+            myInfo()
+        }
+
+        binding.termsOfServiceBtn.setOnClickListener {
+            setTermsOfService()
+        }
+
+        binding.privacyPolicyBtn.setOnClickListener {
+            setPrivacyPolicy()
+        }
         return binding.root
     }
     private fun navigateToLogin() {
@@ -34,4 +46,19 @@ class SettingView : Fragment() {
         startActivity(intent)
         requireActivity().finish()
     }
+    private fun myInfo(){
+        val intent = Intent(requireContext(), MenuMyPage::class.java)
+        startActivity(intent)
+    }
+
+    private fun setTermsOfService(){
+        val intent=Intent(requireContext(), TermsOfService::class.java)
+        startActivity(intent)
+    }
+    private fun setPrivacyPolicy(){
+        val intent=Intent(requireContext(), PrivacyPolicy::class.java)
+        startActivity(intent)
+    }
+
+
 }

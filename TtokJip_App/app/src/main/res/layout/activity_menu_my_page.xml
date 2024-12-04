@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 제목 텍스트 -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/a1009_3"
+            android:lineSpacingExtra="8dp"
+            android:text="똑.집\n정보 확인"
+            android:textColor="@color/black"
+            android:textSize="28sp" />
+
+        <!-- 내 정보 확인 텍스트 -->
+        <TextView
+            android:id="@+id/my_page_text"
+            android:layout_width="263dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp"
+            android:fontFamily="@font/a1009_2"
+            android:gravity="center"
+            android:text="내 정보 확인"
+            android:textSize="18sp" />
+
+        <!-- UserId 제목 텍스트 -->
+        <TextView
+            android:id="@+id/labelUserId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_page_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/a1009_2"
+            android:text="아이디" />
+
+        <!-- UserId 텍스트 -->
+        <TextView
+            android:id="@+id/textUserId"
+            android:layout_width="263dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/labelUserId"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_border"
+            android:fontFamily="@font/a1009_1"
+            android:gravity="center"
+            android:textSize="16sp" />
+
+        <!-- UserName 제목 텍스트 -->
+        <TextView
+            android:id="@+id/labelUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textUserId"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/a1009_2"
+            android:text="이름" />
+
+        <!-- UserName 텍스트 -->
+        <TextView
+            android:id="@+id/textUserName"
+            android:layout_width="263dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/labelUserName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_border"
+            android:fontFamily="@font/a1009_1"
+            android:gravity="center"
+            android:textSize="16sp" />
+
+        <!-- Phone Number 제목 텍스트 -->
+        <TextView
+            android:id="@+id/labelPhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textUserName"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/a1009_2"
+            android:text="전화번호" />
+
+        <!-- Phone Number 텍스트 -->
+        <TextView
+            android:id="@+id/textPhoneNumber"
+            android:layout_width="263dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/labelPhoneNumber"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_border"
+            android:fontFamily="@font/a1009_1"
+            android:gravity="center"
+            android:textSize="16sp" />
+
+        <!-- House Name 제목 텍스트 -->
+        <TextView
+            android:id="@+id/labelHouseName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textPhoneNumber"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/a1009_2"
+            android:text="집 이름" />
+
+        <!-- House Name 텍스트 -->
+        <TextView
+            android:id="@+id/textHouseName"
+            android:layout_width="263dp"
+            android:layout_height="70dp"
+            android:layout_below="@id/labelHouseName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_border"
+            android:fontFamily="@font/a1009_1"
+            android:gravity="center"
+            android:textSize="16sp" />
+
+
+        <!-- 비밀번호 변경 텍스트 -->
+        <TextView
+            android:id="@+id/pw_text"
+            android:layout_width="263dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/textHouseName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/a1009_2"
+            android:gravity="center"
+            android:text="비밀번호 변경" />
+
+        <!-- Password 텍스트 -->
+        <EditText
+            android:id="@+id/textPw"
+            android:layout_width="263dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/pw_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_border"
+            android:fontFamily="@font/a1009_1"
+            android:gravity="center"
+            android:hint="새로운 비밀번호"
+            android:textSize="16sp" />
+
+        <!-- Re-enter Password 텍스트 -->
+        <EditText
+            android:id="@+id/textRePw"
+            android:layout_width="263dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/textPw"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_border"
+            android:fontFamily="@font/a1009_1"
+            android:gravity="center"
+            android:hint="재입력 해주세요"
+            android:textSize="16sp" />
+
+        <!-- 비밀번호 변경 버튼 -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/update_pw_btn"
+            android:layout_width="183dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/textRePw"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_btn_update"
+            android:fontFamily="@font/a1009_1"
+            android:text="비밀번호 변경하기"
+            android:textSize="16dp" />
+
+        <!-- 확인 버튼을 하단에 고정 -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/confirm_btn"
+            android:layout_width="123dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/update_pw_btn"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/rounded_btn_update"
+            android:fontFamily="@font/a1009_1"
+            android:text="확인"
+            android:textSize="16dp" />
+    </RelativeLayout>
+</ScrollView>

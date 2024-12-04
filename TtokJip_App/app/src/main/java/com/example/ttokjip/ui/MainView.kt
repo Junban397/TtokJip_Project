@@ -148,6 +148,7 @@ class MainView : BaseDeviceManger() {
                     deviceViewModel.deviceFavoriteSwitch(deviceId, token)
                 }
             },
+            onSettingClick = { device -> showSettingDeviceDialog(device) },
             onLongClick = { device -> showDeviceDialog(device) }
         )
 

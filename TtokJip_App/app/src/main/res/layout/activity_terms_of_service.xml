@@ -1,0 +1,105 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="16dp"
+            android:text="이용 약관"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- 1번 항목 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="1. 서비스 이용 약관"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:lineSpacingExtra="4dp"
+            android:text="본 서비스는 스마트홈 관리와 관련된 다양한 기능을 제공하며, 사용자는 다음의 약관에 동의함으로써 서비스를 이용할 수 있습니다."
+            android:textSize="16sp" />
+
+        <!-- 2번 항목 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="2. 사용자 책임"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:text="사용자는 제공된 서비스 내에서 올바른 정보를 입력해야 하며, 부정확한 정보로 발생하는 문제에 대한 책임은 사용자에게 있습니다."
+            android:textSize="16sp" />
+
+        <!-- 3번 항목 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="3. 데이터 활용"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:text="본 서비스는 데이터의 안정성을 위해 클라우드 저장소를 이용하며, 사용자는 데이터를 서버에 저장하고 활용하는 것에 동의합니다."
+            android:textSize="16sp" />
+
+        <!-- 4번 항목 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="4. 서비스 제한"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:text="서비스는 사용자의 네트워크 환경 및 시스템 상태에 따라 일시적으로 제한되거나 중단될 수 있습니다."
+            android:textSize="16sp" />
+
+        <!-- 5번 항목 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="5. 면책 조항"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:text="본 서비스는 제공된 기능의 오류 및 제3자로부터 발생하는 문제에 대해 책임을 지지 않습니다."
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>

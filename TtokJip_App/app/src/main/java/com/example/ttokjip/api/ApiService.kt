@@ -6,10 +6,12 @@ import com.example.ttokjip.data.GetLogDate
 import com.example.ttokjip.data.IsFavoriteRequest
 import com.example.ttokjip.data.ModeRequest
 import com.example.ttokjip.data.ModeSetting
+import com.example.ttokjip.data.NewPw
 import com.example.ttokjip.data.SensorDataRequest
 import com.example.ttokjip.data.StatisticsResponse
 import com.example.ttokjip.data.StatusRequest
 import com.example.ttokjip.data.UpdateModeRequest
+import com.example.ttokjip.data.UserInfo
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -77,6 +79,17 @@ interface ApiService {
     @DELETE("/devices/deleteDevice/{deviceId}")
     suspend fun deleteDevice(
         @Path("deviceId") deviceId: String,
+        @Header("Authorization") token: String
+    ): Response<ResponseBody>
+
+    @GET("/auth/getUserInfo")
+    suspend fun getUserInfo(
+        @Header("Authorization") token: String
+    ): Response<List<UserInfo>>
+
+    @PUT("/auth/changePw")
+    suspend fun changePw(
+        @Body newPw: NewPw,
         @Header("Authorization") token: String
     ): Response<ResponseBody>
 }

@@ -14,12 +14,13 @@ import com.example.ttokjip.databinding.ItemDeviceManagerBinding
 class DeviceAdapter(
     private val onDeviceClick: (String) -> Unit,
     private val onFavoriteClick:(String) -> Unit,
+    private val onSettingClick:(Device) -> Unit,
     private val onLongClick: (Device) -> Unit):
     ListAdapter<Device, DeviceAdapter.DeviceViewHolder>(DeviceDiffCallback()) {
 
     class DeviceViewHolder(private val binding: ItemDeviceManagerBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(device: Device, onDeviceClick: (String) -> Unit, onFavoriteClick: (String) -> Unit) {
+        fun bind(device: Device, onDeviceClick: (String) -> Unit, onFavoriteClick: (String) -> Unit, onSettingClick: (Device) -> Unit) {
             binding.device = device
             binding.deviceImage.setImageResource(device.getImageResource())
 
@@ -42,7 +43,9 @@ class DeviceAdapter(
             binding.favoriteImage.setOnClickListener{
                 onFavoriteClick(device.deviceId)
             }
-
+            binding.settingsBtn.setOnClickListener {
+                onSettingClick(device) // 클릭 시 Device 객체 전달
+            }
         }
 
     }
@@ -54,13 +57,14 @@ class DeviceAdapter(
     }
 
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
-        holder.bind(getItem(position), onDeviceClick, onFavoriteClick) // deviceId를 전달
+        holder.bind(getItem(position), onDeviceClick, onFavoriteClick,onSettingClick) // deviceId를 전달
 
         // LongClick 리스너 추가
         holder.itemView.setOnLongClickListener {
             onLongClick(getItem(position)) // LongClick 시 Device 객체 전달
             true // LongClick 이벤트가 처리되었음을 나타냄
         }
+
     }
 
 }

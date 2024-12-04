@@ -104,6 +104,25 @@ class DeviceViewModel : ViewModel() {
             // 오류 처리
         }
     }
+    suspend fun deviceSettingSwitch(deviceId: String, deviceSensor:String ,newStatus:Boolean,token: String) {
+        try {
+            val statusRequest = StatusRequest(deviceId, newStatus)
+
+            val response = RetrofitClient.apiService.updateDeviceStatus(deviceId, statusRequest, "Bearer $token")
+            Log.d("DeviceViewModelqwerqwerqwer", "Device status updated: $deviceId, new status: $newStatus, ssssssssss: $deviceSensor")
+            //블루투스 수신
+            bluetoothStatus(deviceSensor,newStatus)
+
+            if (response.isSuccessful) {
+                fetchDevices(token)  // 디바이스 목록 갱신
+                Log.d("DeviceViewModelqwerqwerqwer", "Device status updated successfully.")
+            } else {
+                Log.e("DeviceViewModelqwerqwerqwer", "Failed to update device status: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e("DeviceViewModelqwerqwerqwer", "Error in deviceSettingSwitch: ${e.message}")
+        }
+    }
 
     // 디바이스 즐겨찾기 상태 변경
     suspend fun deviceFavoriteSwitch(deviceId: String,token: String) {

@@ -3,6 +3,8 @@ package com.example.ttokjip.ui
 import BluetoothManager
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -11,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.ttokjip.data.Device
 import com.example.ttokjip.viewmodel.DeviceViewModel
 import com.example.ttokjip.viewmodel.FilterType
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 open class BaseDeviceManger : Fragment() {
@@ -35,6 +38,43 @@ open class BaseDeviceManger : Fragment() {
                 deviceViewModel.fetchDevices(token)
             }
 
+        }
+        dialog.show(parentFragmentManager, "CustomDialog")
+    }
+    protected fun showSettingDeviceDialog(device: Device) {
+        val dialog = DeviceSettingDialog(device)
+        dialog.onDismissListener = {device, selectedTime ->
+
+            if(selectedTime=="없음"){
+                viewLifecycleOwner.lifecycleScope.launch {
+                    // 데이터를 불러오기 전에 fetchDevices 실행
+                    deviceViewModel.fetchDevices(token)
+                }
+            }else{
+                val delayTimeInSeconds = when (selectedTime) {
+                    "1시간" -> 1000L
+                    "2시간" -> 2000L
+                    "3시간" -> 3000L
+                    "4시간" -> 4000L
+                    "5시간" -> 5000L
+                    "6시간" -> 6000L
+                    "7시간" -> 7000L
+                    "8시간" -> 8000L
+                    "9시간" -> 9000L
+                    "10시간" -> 10000L
+                    else -> 86400000L  // "없음"일 경우 0초
+                }
+                // viewLifecycleOwner.lifecycleScope.launch 내에서 코루틴을 실행
+                viewLifecycleOwner.lifecycleScope.launch {
+                    // 데이터를 불러오기 전에 fetchDevices 실행
+                    deviceViewModel.fetchDevices(token)
+
+                    // 3초 후에 deviceSettingSwitch 실행
+                    delay(delayTimeInSeconds) // 코루틴 내에서의 delay 사용 (Handler 대신)
+                    deviceViewModel.deviceSettingSwitch(device.deviceId, device.sensorName, false, token)
+                    deviceViewModel.fetchDevices(token)
+                }
+            }
         }
         dialog.show(parentFragmentManager, "CustomDialog")
     }

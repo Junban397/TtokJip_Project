@@ -373,7 +373,7 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="8dp"
                 android:fontFamily="@font/a1009_2"
-                android:text="외출 모드"
+                android:text="안전 상태"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 

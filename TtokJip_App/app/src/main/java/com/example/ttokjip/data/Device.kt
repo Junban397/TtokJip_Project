@@ -19,6 +19,7 @@ data class Device(
             "전등" -> R.drawable.icon_lamp
             "에어컨" -> R.drawable.icon_air_cooler
             "히터" -> R.drawable.icon_heater
+            "난방" -> R.drawable.icon_heater
             "선풍기" -> R.drawable.icon_fan
             "공기 청정기" -> R.drawable.icon_air_purifier
             "제습기" -> R.drawable.icon_humidity_control
@@ -94,4 +95,8 @@ data class WeeklyData(
     val date: String,                      // 날짜
     val temperature: Float,                // 온도
     val humidity: Float                    // 습도
+)
+
+data class NewPw(
+    val newPw: String,
 )

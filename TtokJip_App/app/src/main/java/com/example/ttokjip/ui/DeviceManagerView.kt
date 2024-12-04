@@ -76,9 +76,10 @@ class DeviceManagerView : BaseDeviceManger() {
             onFavoriteClick = { deviceId ->
                 // 코루틴 내에서 호출
                 viewLifecycleOwner.lifecycleScope.launch {
-                    deviceViewModel.deviceFavoriteSwitch(deviceId,token!!)
+                    deviceViewModel.deviceFavoriteSwitch(deviceId, token!!)
                 }
             },
+            onSettingClick = { device -> showSettingDeviceDialog(device) },
             onLongClick = { device -> showDeviceDialog(device) }
         )
 
@@ -169,7 +170,7 @@ class DeviceManagerView : BaseDeviceManger() {
                     )
                 )
                 selectedButton = this
-            }else if(nowFilter==""){
+            } else if (nowFilter == "") {
                 setBackgroundColor(
                     ContextCompat.getColor(
                         requireContext(),
@@ -217,9 +218,11 @@ class DeviceManagerView : BaseDeviceManger() {
         super.onDestroyView()
         _binding = null
     }
+
     override fun onResume() {
         super.onResume()
-        val sharedPreferences = requireContext().getSharedPreferences("userPreferences", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("userPreferences", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("token", null)
 
         // 토큰이 null이 아니면 디바이스 목록을 다시 가져오기

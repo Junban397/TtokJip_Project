@@ -22,3 +22,12 @@ data class User(
     val phoneNum: String,
     val admin: Boolean
 )
+data class UserInfo(
+    val _id: String,
+    val userId: String,
+    val pw: String,
+    val UserName: String,
+    val PhoneNu: String,
+    val Admin: Boolean,
+    val houseId: String
+)

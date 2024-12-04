@@ -125,7 +125,7 @@ class LoginMain : AppCompatActivity() {
         } else {
             "로그인 실패"
         }
-        Toast.makeText(this, "로그인 실패: $errorMsg", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "로그인 실패: ID/PW를 확인해주세요", Toast.LENGTH_SHORT).show()
         Log.e("LoginMain", "Error: ${error.message}")
     }
 

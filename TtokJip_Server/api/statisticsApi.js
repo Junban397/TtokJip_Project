@@ -1,7 +1,4 @@
-const { MongoClient } = require('mongodb');
-const { MONGODB_URI } = process.env;
-
-const client = new MongoClient(MONGODB_URI);
+const { client }= require('../connectionDb');
 
 const uploadSensorData = async (req, res) => {
     const { houseId } = req.user;
@@ -12,7 +9,6 @@ const uploadSensorData = async (req, res) => {
     }
 
     try {
-        await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('logs');
         // 기존 데이터를 확인
@@ -49,9 +45,7 @@ const uploadSensorData = async (req, res) => {
     } catch (error) {
         console.error("로그 데이터 저장 오류:", error);
         res.status(500).json({ message: "서버 오류로 인해 저장에 실패했습니다." });
-    } finally {
-        await client.close();
-    }
+    } 
 };
 
 const getStatistics = async (req, res) => {
@@ -63,7 +57,6 @@ const getStatistics = async (req, res) => {
     }
 
     try {
-        await client.connect();
         const database = client.db('ttokjip');
         const collection = database.collection('logs');
 
@@ -144,9 +137,7 @@ console.log(`평균 월 전력량: ${averageMonthlyWattage}`);
     } catch (error) {
         console.error("통계 데이터 계산 오류:", error);
         res.status(500).json({ message: "서버 오류로 인해 데이터를 가져올 수 없습니다." });
-    } finally {
-        await client.close();
-    }
+    } 
 };
 
 
