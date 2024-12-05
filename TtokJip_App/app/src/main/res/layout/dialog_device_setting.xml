@@ -20,31 +20,30 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="10dp">
+        android:layout_gravity="center">
 
         <TextView
+            android:textSize="18sp"
+            android:gravity="center"
             android:id="@+id/device_type_dialog"
             android:layout_width="200dp"
             android:layout_height="28dp"
             android:fontFamily="@font/a1009_1"
-            android:paddingStart="10dp"
             android:textColor="@color/black" />
     </LinearLayout>
 
     <LinearLayout
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="10dp">
+        android:layout_gravity="center">
 
         <TextView
+            android:textSize="12sp"
+            android:gravity="center"
             android:id="@+id/device_loc_dialog"
             android:layout_width="200dp"
             android:layout_height="28dp"
             android:fontFamily="@font/a1009_1"
-            android:paddingStart="10dp"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -85,7 +84,7 @@
             android:layout_height="28dp"
             android:fontFamily="@font/a1009_1"
             android:gravity="center"
-            android:text="예약"
+            android:text="꺼짐 예약"
             android:textColor="@color/black"
             android:textSize="16dp" />
 
